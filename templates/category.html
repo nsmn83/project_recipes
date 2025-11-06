@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Kategoria{% endblock %}
+
+{% block content %}
+<h2>Kategoria: {{ request.args.get('cat', 'Brak') }}</h2>
+<section class="recipe-list">
+    <article class="recipe-card">
+        <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="Przepis 1">
+        <h3>Przepis 1</h3>
+        <p>Czas: 15 min</p>
+        <p>Trudność: Średnia</p>
+        <a href="recipe.html">Zobacz przepis</a>
+    </article>
+</section>
+{% endblock %}

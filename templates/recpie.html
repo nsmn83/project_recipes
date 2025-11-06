@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Szczegóły przepisu{% endblock %}
+
+{% block content %}
+<article class="recipe-detail">
+    <h2>Omlet z warzywami</h2>
+    <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="Omlet z warzywami">
+    <p>Czas przygotowania: 10 min</p>
+    <p>Trudność: Łatwa</p>
+
+    <h3>Składniki:</h3>
+    <ul class="ingredients">
+        <li>2 jajka</li>
+        <li>1/2 papryki</li>
+        <li>1 pomidor</li>
+        <li>Sól, pieprz</li>
+    </ul>
+
+    <h3>Kroki:</h3>
+    <ol class="steps">
+        <li>Roztrzepać jajka.</li>
+        <li>Dodać pokrojone warzywa.</li>
+        <li>Usmażyć na patelni.</li>
+        <li>Podawać na talerzu.</li>
+    </ol>
+</article>
+{% endblock %}

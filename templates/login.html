@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Logowanie{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h2>Logowanie</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Twój email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Hasło:</label>
+            <input type="password" id="password" name="password" placeholder="Twoje hasło" required>
+        </div>
+        <button type="submit">Zaloguj się</button>
+    </form>
+</section>
+{% endblock %}

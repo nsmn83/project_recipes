@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Strona główna{% endblock %}
+
+{% block content %}
+<section class="recipe-list">
+    <article class="recipe-card">
+        <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="Omlet z warzywami">
+        <h2>Omlet z warzywami</h2>
+        <p>Czas przygotowania: 10 min</p>
+        <p>Trudność: Łatwa</p>
+        <a href="recipe.html">Zobacz przepis</a>
+    </article>
+
+    <article class="recipe-card">
+        <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="Sałatka owocowa">
+        <h2>Sałatka owocowa</h2>
+        <p>Czas przygotowania: 5 min</p>
+        <p>Trudność: Bardzo łatwa</p>
+        <a href="recipe.html">Zobacz przepis</a>
+    </article>
+</section>
+{% endblock %}
