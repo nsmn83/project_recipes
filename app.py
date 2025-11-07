@@ -1,89 +1,174 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for, redirect
+
+import os
+from werkzeug.utils import secure_filename
+
+
 
 app = Flask(__name__)
 
-# Example recipe data
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'images')
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# --- PRZYKŁADOWE DANE ---
 recipes_data = {
     'sniadanie': [
-        {'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'url': '/recipe/jajecznica', 'rating': 4},
-        {'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'url': '/recipe/owsianka', 'rating': 5},
-        {'name': 'Kanapki z szynką', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'kanapki.jpg', 'url': '/recipe/kanapki', 'rating': 3},
-        {'name': 'Omlet z warzywami', 'time': '15 min', 'difficulty': 'Średni', 'image': 'lazania.jpg', 'url': '/recipe/omlet', 'rating': 4},
-        {'name': 'Placuszki bananowe', 'time': '20 min', 'difficulty': 'Średni', 'image': 'pizza.jpg', 'url': '/recipe/placuszki', 'rating': 5},
-        {'name': 'Tosty francuskie', 'time': '15 min', 'difficulty': 'Średni', 'image': 'schabowy.jpg', 'url': '/recipe/tosty', 'rating': 4},
-        {'name': 'Smoothie bowl', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'dynica.jpg', 'url': '/recipe/smoothie', 'rating': 5},
-        {'name': 'Muffinki jajeczne', 'time': '25 min', 'difficulty': 'Średni', 'image': 'jajecznica.jpg', 'url': '/recipe/muffinki', 'rating': 4},
-        {'name': 'Jogurt z granolą', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'schabowy.jpg', 'url': '/recipe/jogurt', 'rating': 4},
-        {'name': 'Twarożek z rzodkiewką', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'kanapki.jpg', 'url': '/recipe/twarozek', 'rating': 3},
-        {'name': 'Bagietka z pastą jajeczną', 'time': '15 min', 'difficulty': 'Łatwy', 'image': 'salatka.jpg', 'url': '/recipe/bagietka', 'rating': 4},
-        {'name': 'Płatki kukurydziane z mlekiem', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'lazania.jpg', 'url': '/recipe/platki', 'rating': 3},
-        {'name': 'Kanapki z awokado', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'muffinki.jpg', 'url': '/recipe/awokado', 'rating': 5},
-        {'name': 'Budyń waniliowy', 'time': '15 min', 'difficulty': 'Łatwy', 'image': 'pizza.jpg', 'url': '/recipe/budyn', 'rating': 4},
-        {'name': 'Omlet na słodko', 'time': '15 min', 'difficulty': 'Średni', 'image': 'schabowy.jpg', 'url': '/recipe/omlet_slodki', 'rating': 4},
+        {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
+                {'id': 1, 'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'rating': 5},
     ],
     'obiad': [
-        {'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'url': '/recipe/jajecznica', 'rating': 4},
-        {'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'url': '/recipe/owsianka', 'rating': 5},
-        {'name': 'Kanapki z szynką', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'kanapki.jpg', 'url': '/recipe/kanapki', 'rating': 3},
-        {'name': 'Omlet z warzywami', 'time': '15 min', 'difficulty': 'Średni', 'image': 'lazania.jpg', 'url': '/recipe/omlet', 'rating': 4},
-        {'name': 'Placuszki bananowe', 'time': '20 min', 'difficulty': 'Średni', 'image': 'pizza.jpg', 'url': '/recipe/placuszki', 'rating': 5},
-        {'name': 'Tosty francuskie', 'time': '15 min', 'difficulty': 'Średni', 'image': 'schabowy.jpg', 'url': '/recipe/tosty', 'rating': 4},
-        {'name': 'Smoothie bowl', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'dynica.jpg', 'url': '/recipe/smoothie', 'rating': 5},
-        {'name': 'Muffinki jajeczne', 'time': '25 min', 'difficulty': 'Średni', 'image': 'jajecznica.jpg', 'url': '/recipe/muffinki', 'rating': 4},
-        {'name': 'Jogurt z granolą', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'schabowy.jpg', 'url': '/recipe/jogurt', 'rating': 4},
-        {'name': 'Twarożek z rzodkiewką', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'kanapki.jpg', 'url': '/recipe/twarozek', 'rating': 3},
-        {'name': 'Bagietka z pastą jajeczną', 'time': '15 min', 'difficulty': 'Łatwy', 'image': 'salatka.jpg', 'url': '/recipe/bagietka', 'rating': 4},
-        {'name': 'Płatki kukurydziane z mlekiem', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'lazania.jpg', 'url': '/recipe/platki', 'rating': 3},
-        {'name': 'Kanapki z awokado', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'muffinki.jpg', 'url': '/recipe/awokado', 'rating': 5},
-        {'name': 'Budyń waniliowy', 'time': '15 min', 'difficulty': 'Łatwy', 'image': 'pizza.jpg', 'url': '/recipe/budyn', 'rating': 4},
-        {'name': 'Omlet na słodko', 'time': '15 min', 'difficulty': 'Średni', 'image': 'schabowy.jpg', 'url': '/recipe/omlet_slodki', 'rating': 4},
+        {'id': 1, 'name': 'Schabowy z ziemniakami', 'time': '40 min', 'difficulty': 'Średni', 'image': 'schabowy.jpg', 'rating': 4},
+        {'id': 2, 'name': 'Spaghetti bolognese', 'time': '30 min', 'difficulty': 'Łatwy', 'image': 'pizza.jpg', 'rating': 5},
     ],
-    'kolacja': [
-        {'name': 'Jajecznica z pomidorami', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'jajecznica.jpg', 'url': '/recipe/jajecznica', 'rating': 4},
-        {'name': 'Owsianka z owocami', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'temp.jpg', 'url': '/recipe/owsianka', 'rating': 5},
-        {'name': 'Kanapki z szynką', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'kanapki.jpg', 'url': '/recipe/kanapki', 'rating': 3},
-        {'name': 'Omlet z warzywami', 'time': '15 min', 'difficulty': 'Średni', 'image': 'lazania.jpg', 'url': '/recipe/omlet', 'rating': 4},
-        {'name': 'Placuszki bananowe', 'time': '20 min', 'difficulty': 'Średni', 'image': 'pizza.jpg', 'url': '/recipe/placuszki', 'rating': 5},
-        {'name': 'Tosty francuskie', 'time': '15 min', 'difficulty': 'Średni', 'image': 'schabowy.jpg', 'url': '/recipe/tosty', 'rating': 4},
-        {'name': 'Smoothie bowl', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'dynica.jpg', 'url': '/recipe/smoothie', 'rating': 5},
-        {'name': 'Muffinki jajeczne', 'time': '25 min', 'difficulty': 'Średni', 'image': 'jajecznica.jpg', 'url': '/recipe/muffinki', 'rating': 4},
-        {'name': 'Jogurt z granolą', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'schabowy.jpg', 'url': '/recipe/jogurt', 'rating': 4},
-        {'name': 'Twarożek z rzodkiewką', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'kanapki.jpg', 'url': '/recipe/twarozek', 'rating': 3},
-        {'name': 'Bagietka z pastą jajeczną', 'time': '15 min', 'difficulty': 'Łatwy', 'image': 'salatka.jpg', 'url': '/recipe/bagietka', 'rating': 4},
-        {'name': 'Płatki kukurydziane z mlekiem', 'time': '5 min', 'difficulty': 'Łatwy', 'image': 'lazania.jpg', 'url': '/recipe/platki', 'rating': 3},
-        {'name': 'Kanapki z awokado', 'time': '10 min', 'difficulty': 'Łatwy', 'image': 'muffinki.jpg', 'url': '/recipe/awokado', 'rating': 5},
-        {'name': 'Budyń waniliowy', 'time': '15 min', 'difficulty': 'Łatwy', 'image': 'pizza.jpg', 'url': '/recipe/budyn', 'rating': 4},
-        {'name': 'Omlet na słodko', 'time': '15 min', 'difficulty': 'Średni', 'image': 'schabowy.jpg', 'url': '/recipe/omlet_slodki', 'rating': 4},
-    ]
+    'deser': []
 }
 
-
+# --- STRONA GŁÓWNA ---
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', categories=recipes_data.keys())
 
-# Dynamic category route
+
+# --- LISTA PRZEPISÓW DLA KATEGORII ---
 @app.route('/category/<category>')
 def category(category):
     recipes = recipes_data.get(category, [])
 
+    # Dodaj dynamiczne linki do przepisów
+    for recipe in recipes:
+        recipe['url'] = url_for('recipe_detail', recipe_id=recipe['id'])
+
+    # Obsługa wyszukiwania
     query = request.args.get('q', '').lower()
     if query:
-        # filtruje przepisy po nazwie
         recipes = [r for r in recipes if query in r['name'].lower()]
 
     return render_template('category.html', category=category, recipes=recipes)
 
 
-@app.route('/recipe.html')
-def recipe():
-    return render_template('recipe.html')
+# --- STRONA SZCZEGÓŁÓW PRZEPISU ---
+@app.route('/recipe/<int:recipe_id>')
+def recipe_detail(recipe_id):
+    # Na razie 1 przykładowy przepis
+    recipe = {
+        'id': recipe_id,
+        'name': 'Ciasto dyniowe z polewą',
+        'image': 'pizza.jpg',
+        'difficulty': 'Łatwy',
+        'time': '1 godzina',
+        'servings': 20,
+        'ingredients': [
+            '250 g puree z pieczonej dyni',
+            '200 g masła',
+            '1 szklanka cukru',
+            '1 opakowanie cukru wanilinowego',
+            'Skórka starta z 1 pomarańczy lub 2 mandarynek',
+            '3 jajka (oddzielnie żółtka i białka)',
+            '225 g mąki pszennej',
+            '1 łyżeczka proszku do pieczenia',
+            '1 łyżeczka sody oczyszczonej'
+        ],
+        'icing': ['50 g białej czekolady lub 5 łyżek cukru pudru'],
+        'steps': [
+            'Tortownicę o średnicy 23–24 cm posmarować masłem...',
+            'Piekarnik nagrzać do 180°C...',
+            'Mus z dyni przełożyć do miski...',
+            'Białka ubić na sztywną pianę...',
+            'Masę przełożyć do tortownicy i piec...',
+            'Polewa: do odłożonej masy dodać roztopioną białą czekoladę...'
+        ]
+    }
+
+    return render_template('recipe.html', recipe=recipe)
+
+
+# --- FORMULARZ DODAWANIA PRZEPISU ---
+
+@app.route('/add_recipe', methods=['GET', 'POST'])
+def add_recipe():
+    if request.method == 'POST':
+        # dane tekstowe
+        name = request.form.get('name')
+        category = request.form.get('category')
+        time = request.form.get('time')
+        difficulty = request.form.get('difficulty')
+        portions = request.form.get('portions')
+        ingredients = request.form.getlist('ingredients')
+        steps = request.form.getlist('steps')
+
+        # plik zdjęcia
+        file = request.files.get('image')
+        filename = 'placeholder.jpg'
+
+        print("Plik przesłany:", file)
+        if file:
+            print("Nazwa pliku:", file.filename)
+
+
+
+        file = request.files.get('image')
+        filename = 'placeholder.jpg'
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(save_path)
+            print("Plik zapisany:", save_path)
+        else:
+            print("Nie przesłano pliku lub nieprawidłowe rozszerzenie.")
+
+        # dodanie przepisu
+        new_id = len(recipes_data.get(category, [])) + 1
+        new_recipe = {
+            'id': new_id,
+            'name': name,
+            'time': time,
+            'difficulty': difficulty,
+            'image': filename,
+            'rating': 0,
+            'portions': portions,
+            'ingredients': [i for i in ingredients if i.strip()],
+            'steps': [s for s in steps if s.strip()]
+        }
+
+        recipes_data.setdefault(category, []).append(new_recipe)
+        return redirect(url_for('category', category=category))
+
+    return render_template('add_recipe.html', categories=recipes_data.keys())
+
 
 @app.route('/login.html')
 def login():
     return render_template('login.html')
 
 
-
 if __name__ == '__main__':
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
     app.run(debug=True)

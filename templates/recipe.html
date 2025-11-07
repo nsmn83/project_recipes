@@ -1,43 +1,51 @@
 {% extends 'base.html' %}
 
-{% block title %}Szczegóły przepisu{% endblock %}
+{% block title %}{{ recipe.name }}{% endblock %}
 
 {% block content %}
 <article class="recipe-detail">
+  <div class="recipe-container">
     <div class="recipe-layout">
+      
+      <!-- LEWA KOLUMNA -->
+      <aside class="recipe-info">
+        <img src="{{ url_for('static', filename='images/' + recipe.image) }}" alt="{{ recipe.name }}" class="recipe-image">
 
-        <!-- LEWA STRONA – KROKI -->
-        <div class="recipe-steps">
-            <h2>Omlet z warzywami</h2>
-            <h3>Kroki przygotowania:</h3>
-            <ol class="steps">
-                <li>Roztrzepać jajka w misce z solą i pieprzem. Masa powinna być jednolita i lekko spieniona.</li>
-                <li>Rozgrzać oliwę na patelni i podsmażyć paprykę z pomidorem przez 2-3 minuty.</li>
-                <li>Wlać jajka na warzywa i smażyć na średnim ogniu, aż się zetną.</li>
-                <li>Przykryć patelnię, by wierzch omletu dobrze się ściął, ale nie wysuszył.</li>
-                <li>Podawać od razu, udekorować świeżymi ziołami.</li>
-            </ol>
-        </div>
+        <h3>Informacje</h3>
+        <ul class="recipe-meta">
+          <li><i class="fa fa-fire"></i> Trudność: <strong>{{ recipe.difficulty }}</strong></li>
+          <li><i class="fa fa-clock-o"></i> Czas przygotowania: <strong>{{ recipe.time }}</strong></li>
+          <li><i class="fa fa-cutlery"></i> Porcje: <strong>{{ recipe.servings }}</strong></li>
+        </ul>
 
-        <!-- PRAWA STRONA – ZDJĘCIE + META + SKŁADNIKI -->
-        <div class="recipe-info">
-            <img src="{{ url_for('static', filename='images/pizza.jpg') }}" alt="Omlet z warzywami">
+        <h3>Składniki</h3>
+        <ul class="ingredients">
+          {% for item in recipe.ingredients %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
 
-            <div class="recipe-meta">
-                <p><i class="fa fa-clock-o"></i> 10 min</p>
-                <p><i class="fa fa-fire"></i> Łatwy</p>
-            </div>
+        <h3>Polewa</h3>
+        <ul class="ingredients">
+          {% for item in recipe.icing %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </aside>
 
-            <h3>Składniki:</h3>
-            <ul class="ingredients">
-                <li>2 jajka</li>
-                <li>1/2 papryki pokrojonej w kostkę</li>
-                <li>1 pomidor w plasterkach</li>
-                <li>Sól i pieprz do smaku</li>
-                <li>1 łyżka oliwy do smażenia</li>
-            </ul>
-        </div>
+      <!-- PRAWA KOLUMNA -->
+      <section class="recipe-steps">
+        <h2 class="recipe-title">{{ recipe.name }}</h2>
+
+        <h3>Przygotowanie</h3>
+        <ol class="steps">
+  {% for step in recipe.steps %}
+  <li><strong>KROK {{ loop.index }}:</strong> {{ step }}</li>
+  {% endfor %}
+</ol>
+      </section>
 
     </div>
+  </div>
 </article>
 {% endblock %}

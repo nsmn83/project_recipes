@@ -3,54 +3,62 @@
 {% block title %}Dodaj przepis{% endblock %}
 
 {% block content %}
-<section class="form-section">
-    <h2>Dodaj nowy przepis</h2>
-    <form id="recipeForm" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="title">Tytuł przepisu:</label>
-            <input type="text" id="title" name="title" placeholder="Nazwa przepisu" required>
-        </div>
+<h2 class="page-title">Dodaj nowy przepis</h2>
 
-        <div class="form-group">
-            <label for="category">Kategoria:</label>
-            <select id="category" name="category">
-                <option value="sniadanie">Śniadanie</option>
-                <option value="obiad">Obiad</option>
-                <option value="kolacja">Kolacja</option>
-                <option value="deser">Deser</option>
-            </select>
-        </div>
+<form action="{{ url_for('add_recipe') }}" method="POST" enctype="multipart/form-data" class="recipe-form">
 
-        <div class="form-group">
-            <label for="time">Czas przygotowania (min):</label>
-            <input type="number" id="time" name="time" min="1" required>
-        </div>
+  <label for="name">Nazwa przepisu:</label>
+  <input type="text" id="name" name="name" required>
 
-        <div class="form-group">
-            <label for="difficulty">Trudność:</label>
-            <select id="difficulty" name="difficulty">
-                <option value="latwa">Łatwa</option>
-                <option value="srednia">Średnia</option>
-                <option value="trudna">Trudna</option>
-            </select>
-        </div>
+  <label for="category">Kategoria:</label>
+  <select id="category" name="category" required>
+    {% for cat in categories %}
+      <option value="{{ cat }}">{{ cat|capitalize }}</option>
+    {% endfor %}
+  </select>
 
-        <div class="form-group">
-            <label for="ingredients">Składniki (po jednym w linii):</label>
-            <textarea id="ingredients" name="ingredients" rows="5" placeholder="np. 2 jajka&#10;1/2 papryki" required></textarea>
-        </div>
+  <label for="time">Czas przygotowania:</label>
+  <input type="text" id="time" name="time" required>
 
-        <div class="form-group">
-            <label for="steps">Kroki (po jednym w linii):</label>
-            <textarea id="steps" name="steps" rows="5" placeholder="np. Roztrzepać jajka&#10;Usmażyć na patelni" required></textarea>
-        </div>
+  <label for="difficulty">Trudność:</label>
+  <select id="difficulty" name="difficulty">
+    <option>Łatwy</option>
+    <option>Średni</option>
+    <option>Trudny</option>
+  </select>
 
-        <div class="form-group">
-            <label for="image">Zdjęcie przepisu:</label>
-            <input type="file" id="image" name="image" accept="image/*">
-        </div>
+  <label for="portions">Liczba porcji:</label>
+  <input type="number" id="portions" name="portions" min="1" required>
 
-        <button type="submit">Dodaj przepis</button>
-    </form>
-</section>
+  <label for="image">Zdjęcie przepisu:</label>
+  <input type="file" id="image" name="image" accept="image/*">
+
+  <!-- SKŁADNIKI -->
+  <div id="ingredients-container" class="dynamic-field">
+    <label>Składniki:</label>
+    <div class="field-item">
+      <input type="text" name="ingredients" placeholder="np. 200 g mąki">
+      <i class="fa fa-trash remove-icon" onclick="removeField(this)"></i>
+    </div>
+  </div>
+  <button type="button" class="add-btn" onclick="addIngredient()">+ Dodaj składnik</button>
+
+  <!-- KROKI -->
+  <div id="steps-container" class="dynamic-field">
+    <label>Kroki przygotowania:</label>
+    <div class="field-item">
+      <input type="text" name="steps" placeholder="np. Wymieszaj składniki">
+      <i class="fa fa-trash remove-icon" onclick="removeField(this)"></i>
+    </div>
+  </div>
+  <button type="button" class="add-btn" onclick="addStep()">+ Dodaj krok</button>
+
+  <button type="submit" class="submit-btn">Zapisz przepis</button>
+</form>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}

@@ -28,3 +28,33 @@ function toggleDropdown(event) {
     }
   }
 }
+
+function addIngredient() {
+  const container = document.getElementById('ingredients-container');
+  const field = document.createElement('div');
+  field.classList.add('field-item');
+
+  field.innerHTML = `
+    <input type="text" name="ingredients" placeholder="np. 1 łyżka cukru">
+    <i class="fa fa-trash remove-icon" onclick="removeField(this)"></i>
+  `;
+
+  container.appendChild(field);
+}
+
+function addStep() {
+  const container = document.getElementById('steps-container');
+  const field = document.createElement('div');
+  field.classList.add('field-item');
+
+  field.innerHTML = `
+    <input type="text" name="steps" placeholder="np. Wymieszaj składniki">
+    <i class="fa fa-trash remove-icon" onclick="removeField(this)"></i>
+  `;
+
+  container.appendChild(field);
+}
+
+function removeField(icon) {
+  icon.parentElement.remove();
+}
