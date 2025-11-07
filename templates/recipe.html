@@ -3,33 +3,41 @@
 {% block title %}Szczegóły przepisu{% endblock %}
 
 {% block content %}
-<div>
-    <img src="{{ url_for('static', filename='images/omlet.jpg') }}" alt="Omlet z warzywami">
+<article class="recipe-detail">
+    <div class="recipe-layout">
 
-    <div class="recipe-header">
-        <h2>Omlet z warzywami</h2>
-        <div class="recipe-meta">
-            <p><i class="fa fa-clock-o"></i> 10 min</p>
-            <p><i class="fa fa-fire"></i> Łatwy</p>
+        <!-- LEWA STRONA – KROKI -->
+        <div class="recipe-steps">
+            <h2>Omlet z warzywami</h2>
+            <h3>Kroki przygotowania:</h3>
+            <ol class="steps">
+                <li>Roztrzepać jajka w misce z solą i pieprzem. Masa powinna być jednolita i lekko spieniona.</li>
+                <li>Rozgrzać oliwę na patelni i podsmażyć paprykę z pomidorem przez 2-3 minuty.</li>
+                <li>Wlać jajka na warzywa i smażyć na średnim ogniu, aż się zetną.</li>
+                <li>Przykryć patelnię, by wierzch omletu dobrze się ściął, ale nie wysuszył.</li>
+                <li>Podawać od razu, udekorować świeżymi ziołami.</li>
+            </ol>
         </div>
+
+        <!-- PRAWA STRONA – ZDJĘCIE + META + SKŁADNIKI -->
+        <div class="recipe-info">
+            <img src="{{ url_for('static', filename='images/pizza.jpg') }}" alt="Omlet z warzywami">
+
+            <div class="recipe-meta">
+                <p><i class="fa fa-clock-o"></i> 10 min</p>
+                <p><i class="fa fa-fire"></i> Łatwy</p>
+            </div>
+
+            <h3>Składniki:</h3>
+            <ul class="ingredients">
+                <li>2 jajka</li>
+                <li>1/2 papryki pokrojonej w kostkę</li>
+                <li>1 pomidor w plasterkach</li>
+                <li>Sól i pieprz do smaku</li>
+                <li>1 łyżka oliwy do smażenia</li>
+            </ul>
+        </div>
+
     </div>
-
-    <h3>Składniki:</h3>
-    <ul class="ingredients">
-        <li>2 jajka</li>
-        <li>1/2 papryki pokrojonej w kostkę</li>
-        <li>1 pomidor, pokrojony w plasterki</li>
-        <li>Sól i pieprz do smaku</li>
-        <li>1 łyżka oliwy do smażenia</li>
-    </ul>
-
-    <h3>Kroki:</h3>
-    <ol class="steps">
-        <li>Roztrzepać jajka w misce, doprawić solą i pieprzem. Upewnij się, że masa jest jednolita i lekko spieniona.</li>
-        <li>Na patelni rozgrzać oliwę, podsmażyć pokrojoną paprykę i pomidory przez około 2-3 minuty, aż będą lekko miękkie.</li>
-        <li>Wlać jajka na warzywa i smażyć na średnim ogniu, delikatnie mieszając, aby omlet równomiernie się ściął.</li>
-        <li>Kiedy omlet jest prawie ścięty, przykryć patelnię pokrywką na 1-2 minuty, aby wierzch dobrze się ściął, ale nie był suchy.</li>
-        <li>Zdjąć z patelni, podawać od razu na talerzu, można ozdobić świeżymi ziołami.</li>
-    </ol>
-</div>
+</article>
 {% endblock %}
