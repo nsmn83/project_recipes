@@ -1,32 +1,72 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-
-  <title>Moje przepisy</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<script src="script.js"></script>
-<body>
-
 <div class="topnav" id="myTopnav">
-    <a href="{{ url_for('index') }}" class="{% if request.path == url_for('index') %}active{% endif %}">Strona główna</a>
-        <div class="dropdown">
-          <a href="javascript:void(0);" class="{% if request.path.startswith('/category') %}active{% endif %}" onclick="toggleDropdown(event)">Przepisy</a>
-          <div class="dropdown-content">
-            <a href="{{ url_for('category', category='sniadanie') }}">Śniadania</a>
-            <a href="{{ url_for('category', category='obiad') }}">Obiady</a>
-            <a href="{{ url_for('category', category='kolacja') }}">Kolacje</a>
-          </div>
-        </div>
-    <a href="{{ url_for('login') }}" class="{% if request.path == url_for('login') %}active{% endif %}">Logowanie</a>
-    <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
-        <i class="fa fa-bars"></i>
+  <!-- 🔹 Strona główna -->
+  <a href="{{ url_for('index') }}" class="{% if request.path == url_for('index') %}active{% endif %}">
+    Strona główna
+  </a>
+
+  <!-- 🔹 Menu przepisy -->
+  <div class="dropdown">
+    <a href="javascript:void(0);" 
+       class="{% if request.path.startswith('/category') %}active{% endif %}" 
+       onclick="toggleDropdown(event)">
+       Przepisy
     </a>
+    <div class="dropdown-content">
+      <a href="{{ url_for('category', category='sniadanie') }}">Śniadania</a>
+      <a href="{{ url_for('category', category='obiad') }}">Obiady</a>
+      <a href="{{ url_for('category', category='kolacja') }}">Kolacje</a>
+      <a href="{{ url_for('category', category='deser') }}">Desery</a>
+    </div>
+  </div>
+
+  <!-- 🔹 Menu konto -->
+  <div class="dropdown">
+    <a href="javascript:void(0);" onclick="toggleDropdown(event)">
+      Konto {% if session.get('username') %}({{ session['username'] }}){% endif %}
+    </a>
+    <div class="dropdown-content">
+      {% if session.get('username') %}
+        <a href="{{ url_for('add_recipe') }}">Dodaj przepis</a>
+        <a href="#">Profil</a>
+        {% if session.get('is_admin') %}
+          <a href="{{ url_for('admin_dashboard') }}">Panel admina</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Wyloguj</a>
+      {% else %}
+        <a href="javascript:void(0);" onclick="openModal('loginModal')">Zaloguj się</a>
+        <a href="javascript:void(0);" onclick="openModal('registerModal')">Zarejestruj się</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 🔹 Ikona menu (dla wersji mobilnej) -->
+  <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
+    <i class="fa fa-bars"></i>
+  </a>
 </div>
-</header>
-</body>
-</html>
+
+<!-- 🔹 Modal logowania -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('loginModal')">&times;</span>
+    <h2>Logowanie</h2>
+    <form action="{{ url_for('login') }}" method="POST">
+      <input type="text" name="username" placeholder="Nazwa użytkownika" required>
+      <input type="password" name="password" placeholder="Hasło" required>
+      <button type="submit">Zaloguj się</button>
+    </form>
+  </div>
+</div>
+
+<!-- 🔹 Modal rejestracji -->
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('registerModal')">&times;</span>
+    <h2>Rejestracja</h2>
+    <form action="{{ url_for('register') }}" method="POST">
+      <input type="text" name="username" placeholder="Nazwa użytkownika" required>
+      <input type="password" name="password" placeholder="Hasło" required>
+      <button type="submit">Zarejestruj się</button>
+    </form>
+  </div>
+</div>

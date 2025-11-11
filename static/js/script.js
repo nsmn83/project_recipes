@@ -58,3 +58,50 @@ function addStep() {
 function removeField(icon) {
   icon.parentElement.remove();
 }
+
+//logowanie i rejestracja
+function openModal(id) {
+  document.getElementById(id).style.display = "block";
+}
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+window.onclick = function(event) {
+  const modals = document.getElementsByClassName('modal');
+  for (let m of modals) {
+    if (event.target == m) m.style.display = "none";
+  }
+}
+
+function initStarRating(containerSelector, inputSelector) {
+  const container = document.querySelector(containerSelector);
+  if (!container) return;
+
+  const stars = container.querySelectorAll('.fa-star');
+  const input = document.querySelector(inputSelector);
+
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      const value = star.getAttribute('data-value');
+      input.value = value;
+
+      stars.forEach(s => {
+        s.classList.toggle('star-checked', s.getAttribute('data-value') <= value);
+      });
+    });
+
+    star.addEventListener('mouseover', () => {
+      const value = star.getAttribute('data-value');
+      stars.forEach(s => {
+        s.classList.toggle('star-checked', s.getAttribute('data-value') <= value);
+      });
+    });
+
+    star.addEventListener('mouseout', () => {
+      const selected = input.value;
+      stars.forEach(s => {
+        s.classList.toggle('star-checked', s.getAttribute('data-value') <= selected);
+      });
+    });
+  });
+}

@@ -495,3 +495,167 @@ ol li{
 .remove-icon:hover {
   color: #e00;
 }
+
+/* Koniec dodawania przepisu*/
+/*modale logowania i rejestracji */
+/* KOD DODANY PRZEZ CIEBIE W NASZEJ ROZMOWIE */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 300px;
+  border-radius: 10px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
+}
+
+.admin-panel {
+  max-width: 600px;
+  margin: 60px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.admin-panel h1 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.admin-panel p {
+  color: #555;
+}
+
+/* dodawanie ocen*/
+/* === BLOK DODAWANIA KOMENTARZA === */
+.comment-section {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.comment-section h3 {
+  color: #c75c1a;
+  margin-bottom: 1rem;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comment-form textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* === LISTA KOMENTARZY === */
+.comment-section,
+.comments-section {
+  max-width: 1000px;
+  margin: 2rem auto;
+  border: 1px solid #ddd;
+  padding: 1.5rem;
+  background: #fff;
+}
+
+.comments-section {
+  background: #f9f9f9;
+}
+
+.comment-section h3,
+.comments-section h3 {
+  color: #6d181c;
+  margin-bottom: 1rem;
+}
+
+.comment-form textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 10px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.comments-list {
+  list-style: none;
+  padding: 0;
+}
+
+.comment-item {
+  border-bottom: 1px solid #eee;
+  padding: 0.8rem 0;
+}
+
+.comment-item:last-child {
+  border-bottom: none;
+}
+
+.user-comment {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  background: #fdfdfd;
+}
+
+.delete-btn {
+  background-color: #a00;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #c00;
+}
+
+.comments-wrapper {
+  max-width: 1000px; /* ⬅️ identycznie jak .recipe-layout */
+  margin: 0 auto;    /* wyśrodkowanie */
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+.comments-wrapper section {
+  margin-bottom: 2rem;
+}
+
+.comments-wrapper h3 {
+  color: #6d181c;
+}

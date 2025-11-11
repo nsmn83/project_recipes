@@ -11,19 +11,22 @@
 <section class="recipe-list">
     {% if recipes %}
         {% for recipe in recipes %}
-        <div class="card">
-            <img src="{{ url_for('static', filename='images/' + recipe.image) }}" alt="{{ recipe.name }}">
-            <h3>{{ recipe.name }}</h3>
-            <p><i class="fa fa-clock-o"></i> Czas: {{ recipe.time }}</p>
-            <p><i class="fa fa-fire"></i> {{ recipe.difficulty }}</p>
-            <div class="rating">
+<div class="card">
+    <img src="{{ url_for('static', filename='images/' + recipe.image) }}" alt="{{ recipe.name }}">
+    <h3>{{ recipe.name }}</h3>
+    <p><i class="fa fa-clock-o"></i> Czas: {{ recipe.time }}</p>
+    <p><i class="fa fa-fire"></i> {{ recipe.difficulty }}</p>
+
+    <div class="rating">
+    {% set avg = recipe.rating|round(0, 'floor') %}
     {% for i in range(1, 6) %}
-        <span class="fa fa-star {% if i <= recipe.rating %}star-checked{% endif %}"></span>
+        <span class="fa fa-star {% if i <= avg %}star-checked{% endif %}"></span>
     {% endfor %}
 </div>
-            <a href="{{ recipe.url }}">Zobacz przepis</a>
-        </div> 
-        {% endfor %}
+
+    <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}">Zobacz przepis</a>
+</div>
+{% endfor %}
     {% else %}
         <p>Brak przepisów w tej kategorii.</p>
     {% endif %}

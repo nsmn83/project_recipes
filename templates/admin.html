@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Panel administratora{% endblock %}
+
+{% block content %}
+<section class="admin-panel">
+  <h1>Panel administratora</h1>
+  <p>Witaj, {{ session['username'] }}!</p>
+
+  <!-- Zarządzanie użytkownikami -->
+  <h2>Użytkownicy</h2>
+  <ul>
+    {% for user in users %}
+    <li>
+      {{ user.username }}
+      {% if not user.is_admin %} 
+        <form action="{{ url_for('admin_delete_user', user_id=user.id) }}" method="POST" style="display:inline;">
+          <button type="submit">Usuń</button>
+        </form>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Zarządzanie komentarzami -->
+  <h2>Komentarze</h2>
+  <ul>
+    {% for comment in comments %}
+    <li>
+      {{ comment.user.username }} - {{ comment.recipe.name }}: "{{ comment.text }}" 
+      <form action="{{ url_for('admin_delete_comment', comment_id=comment.id) }}" method="POST" style="display:inline;">
+        <button type="submit">Usuń</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Zarządzanie przepisami -->
+  <h2>Przepisy</h2>
+  <ul>
+    {% for recipe in recipes %}
+    <li>
+      {{ recipe.name }}
+      <form action="{{ url_for('admin_delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
+        <button type="submit">Usuń</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+
+</section>
+{% endblock %}

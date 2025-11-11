@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block title %}{{ recipe.name }}{% endblock %}
 
 {% block content %}
@@ -15,20 +14,13 @@
         <ul class="recipe-meta">
           <li><i class="fa fa-fire"></i> Trudność: <strong>{{ recipe.difficulty }}</strong></li>
           <li><i class="fa fa-clock-o"></i> Czas przygotowania: <strong>{{ recipe.time }}</strong></li>
-          <li><i class="fa fa-cutlery"></i> Porcje: <strong>{{ recipe.servings }}</strong></li>
+          <li><i class="fa fa-cutlery"></i> Porcje: <strong>{{ recipe.portions }}</strong></li>
         </ul>
 
         <h3>Składniki</h3>
         <ul class="ingredients">
           {% for item in recipe.ingredients %}
-          <li>{{ item }}</li>
-          {% endfor %}
-        </ul>
-
-        <h3>Polewa</h3>
-        <ul class="ingredients">
-          {% for item in recipe.icing %}
-          <li>{{ item }}</li>
+          <li>{{ item.text }}</li>
           {% endfor %}
         </ul>
       </aside>
@@ -39,13 +31,84 @@
 
         <h3>Przygotowanie</h3>
         <ol class="steps">
-  {% for step in recipe.steps %}
-  <li><strong>KROK {{ loop.index }}:</strong> {{ step }}</li>
-  {% endfor %}
-</ol>
+          {% for step in recipe.steps|sort(attribute='order') %}
+          <li><strong>KROK {{ loop.index }}:</strong> {{ step.text }}</li>
+          {% endfor %}
+        </ol>
       </section>
+    </div> <!-- 🔹 koniec recipe-layout -->
 
-    </div>
-  </div>
+    <!-- 🔹 BLOK DODAWANIA KOMENTARZA -->
+    <!-- 🔹 KOMENTARZE (opakowane razem, by zachować szerokość) -->
+<div class="comments-wrapper">
+
+  {% if session.username %}
+    <section>
+      {% if user_comment %}
+        <h3>Twój komentarz</h3>
+        <div>
+          <strong>{{ user_comment.user.username }}</strong> 
+          ({{ user_comment.created_at.strftime('%Y-%m-%d') }}) - Ocena:
+          {% for i in range(1,6) %}
+            <span class="fa fa-star {% if i <= user_comment.rating %}star-checked{% endif %}"></span>
+          {% endfor %}
+          <p>{{ user_comment.text }}</p>
+
+          <form action="{{ url_for('delete_comment', recipe_id=recipe.id, comment_id=user_comment.id) }}" method="POST">
+            <button type="submit" class="delete-btn">Usuń komentarz</button>
+          </form>
+        </div>
+      {% else %}
+        <h3>Dodaj komentarz</h3>
+        <form action="{{ url_for('add_comment', recipe_id=recipe.id) }}" method="POST" class="comment-form">
+          <label>Ocena:</label>
+          <div class="star-rating">
+            {% for i in range(1,6) %}
+              <span class="fa fa-star" data-value="{{ i }}" style="cursor:pointer; font-size:1.5em;"></span>
+            {% endfor %}
+            <input type="hidden" name="rating" id="rating" required>
+          </div>
+
+          <textarea name="text" rows="3" placeholder="Napisz komentarz..." required></textarea>
+          <button type="submit" class="add-btn">Dodaj komentarz</button>
+        </form>
+      {% endif %}
+    </section>
+  {% else %}
+    <section>
+      <p><a href="#" onclick="openModal('loginModal')">Zaloguj się</a>, aby dodać komentarz.</p>
+    </section>
+  {% endif %}
+
+  <section>
+    <h3>Komentarze</h3>
+    {% if recipe.comments %}
+      <ul>
+        {% for comment in recipe.comments %}
+          <li>
+            <strong>{{ comment.user.username }}</strong> 
+            ({{ comment.created_at.strftime('%Y-%m-%d') }}) - Ocena:
+            {% for i in range(1,6) %}
+              <span class="fa fa-star {% if i <= comment.rating %}star-checked{% endif %}"></span>
+            {% endfor %}
+            <p>{{ comment.text }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Brak komentarzy. Bądź pierwszy!</p>
+    {% endif %}
+  </section>
+
+</div> <!-- 🔹 koniec comments-wrapper -->
+
+
+  </div> <!-- 🔹 koniec recipe-container -->
 </article>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    initStarRating('.star-rating', '#rating');
+  });
+</script>
 {% endblock %}
