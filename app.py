@@ -9,11 +9,11 @@ import os
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-# 📦 Konfiguracja bazy danych (SQLite)
+#Koniguracja bazy danych
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# 📁 Upload folder
+#Zdefiniowanie folderu na dodawane zdjęcia
 CATEGORIES = ['sniadanie', 'obiad', 'kolacja', 'deser']
 UPLOAD_FOLDER = os.path.join(app.root_path, "static", "images")
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
@@ -21,7 +21,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 
-# --- MODELE ---
+#MODELE ENCJI W BAZIE DANYCH
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -90,13 +90,17 @@ class Comment(db.Model):
         return f"<Comment by {self.user.username} on {self.recipe.name}>"
 
 
-# --- Pomocnicze funkcje ---
+#Funkcje pomocnicze
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def calculate_rating(recipe):
+    avg_rating = db.session.query(db.func.avg(Comment.rating)).filter_by(recipe_id=recipe.id).scalar()
+    recipe.rating = round(avg_rating, 2) if avg_rating else 0
+    db.session.commit()
 
-# --- Dekoratory ---
+#Dekoratory funkcji (ograniczenie dostępu)
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -117,7 +121,7 @@ def admin_required(f):
     return decorated
 
 
-# --- ROUTES ---
+#URL do odpowiednich stron / podstron serwisu
 
 @app.route("/")
 def index():
@@ -128,9 +132,18 @@ def index():
 
 @app.route("/category/<category>")
 def category(category):
-    recipes = Recipe.query.filter_by(category=category).all()
-    return render_template("category.html", category=category, recipes=recipes)
 
+    q = request.args.get('q', '')
+
+    if q:
+        recipes = Recipe.query.filter(
+            Recipe.category == category,
+            Recipe.name.ilike(f"%{q}%")
+        ).all()
+    else:
+        recipes = Recipe.query.filter_by(category=category).all()
+    
+    return render_template("category.html", category=category, recipes=recipes)
 
 @app.route("/recipe/<int:recipe_id>")
 def recipe_detail(recipe_id):
@@ -173,13 +186,13 @@ def add_recipe():
         db.session.add(new_recipe)
         db.session.commit()
 
-        # dodaj składniki
+        #Dodanie składników
         ingredients = request.form.getlist("ingredients")
         for text in ingredients:
             if text.strip():
                 db.session.add(Ingredient(text=text.strip(), recipe=new_recipe))
 
-        # dodaj kroki
+        #Dodanie kroków
         steps = request.form.getlist("steps")
         for order, text in enumerate(steps, start=1):
             if text.strip():
@@ -198,13 +211,13 @@ def add_comment(recipe_id):
     recipe = Recipe.query.get_or_404(recipe_id)
     user = User.query.filter_by(username=session["username"]).first()
 
-    # Sprawdź, czy użytkownik już dodał komentarz do tego przepisu
+    #Sprawdzenie czy użytkownik skomentował dany przepis
     existing_comment = Comment.query.filter_by(recipe_id=recipe.id, user_id=user.id).first()
     if existing_comment:
         flash("Komentarz już istnieje. Możesz go edytować lub usunąć.", "error")
         return redirect(url_for("recipe_detail", recipe_id=recipe.id))
 
-    # Pobierz dane z formularza
+    #Pobranie danych z formularza
     rating = int(request.form.get("rating"))
     text = request.form.get("text").strip()
 
@@ -216,10 +229,7 @@ def add_comment(recipe_id):
     db.session.add(comment)
     db.session.commit()
 
-    # Aktualizuj średnią ocenę przepisu
-    avg_rating = db.session.query(db.func.avg(Comment.rating)).filter_by(recipe_id=recipe.id).scalar()
-    recipe.rating = round(avg_rating, 2)
-    db.session.commit()
+    calculate_rating(recipe)
 
     flash("Komentarz dodany!", "success")
     return redirect(url_for("recipe_detail", recipe_id=recipe.id))
@@ -240,15 +250,13 @@ def delete_comment(recipe_id, comment_id):
 
     # Aktualizuj średnią ocenę przepisu
     recipe = Recipe.query.get(recipe_id)
-    avg_rating = db.session.query(db.func.avg(Comment.rating)).filter_by(recipe_id=recipe.id).scalar()
-    recipe.rating = round(avg_rating, 2) if avg_rating else 0
-    db.session.commit()
+    calculate_rating(recipe)
 
     flash("Komentarz usunięty.", "success")
     return redirect(url_for("recipe_detail", recipe_id=recipe_id))
 
 
-# --- AUTORYZACJA ---
+#Autoryzacja użytkowników
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -298,7 +306,7 @@ def admin_dashboard():
     comments = Comment.query.all()
     return render_template("admin.html", users=users, recipes=recipes, comments=comments)
 
-# Usuń użytkownika
+#Usunięcie użytkownika
 @app.route("/admin/delete_user/<int:user_id>", methods=["POST"])
 @admin_required
 def admin_delete_user(user_id):
@@ -311,7 +319,7 @@ def admin_delete_user(user_id):
         flash(f"Użytkownik {user.username} został usunięty.", "success")
     return redirect(url_for("admin_dashboard"))
 
-# Usuń komentarz
+# Usunięcie komentarza
 @app.route("/admin/delete_comment/<int:comment_id>", methods=["POST"])
 @admin_required
 def admin_delete_comment(comment_id):
@@ -321,7 +329,7 @@ def admin_delete_comment(comment_id):
     flash("Komentarz został usunięty.", "success")
     return redirect(url_for("admin_dashboard"))
 
-# Usuń przepis
+# Usunięcie przepisu
 @app.route("/admin/delete_recipe/<int:recipe_id>", methods=["POST"])
 @admin_required
 def admin_delete_recipe(recipe_id):
@@ -337,7 +345,7 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
 
-        # 🔹 Automatyczne tworzenie konta administratora, jeśli nie istnieje
+       #Tymczasowe rozwiązanie - utworzenie konta administratora
         if not User.query.filter_by(username="admin").first():
             admin_user = User(
                 username="admin",
@@ -346,6 +354,6 @@ if __name__ == "__main__":
             )
             db.session.add(admin_user)
             db.session.commit()
-            print("✅ Konto administratora utworzone: login=admin, hasło=admin123")
+            print("Konto administratora utworzone: login=admin, hasło=admin123")
 
     app.run(debug=True)

@@ -146,11 +146,6 @@ ol li{
   color: #6d181c;
 }
 
-.topnav a.active {
-  background-color: #6d181c;
-  color: white;
-}
-
 .topnav .icon {
   display: none;
 }
