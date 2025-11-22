@@ -28,6 +28,12 @@
       {% if session.get('username') %}
         <a href="#">Profil</a>
         <a href="{{ url_for('logout') }}">Wyloguj</a>
+               {% if not session.get('is_admin') %}
+          <form action="{{ url_for('delete_my_account') }}" method="POST" 
+                onsubmit="return confirm('Czy na pewno chcesz usunąć swoje konto?\nTo działanie jest nieodwracalne.');">
+            <button type="submit" class="dropdown-btn-danger">Usuń konto</button>
+          </form>
+        {% endif %}
       {% else %}
         <a href="javascript:void(0);" onclick="openModal('loginModal')">Zaloguj się</a>
         <a href="javascript:void(0);" onclick="openModal('registerModal')">Zarejestruj się</a>

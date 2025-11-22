@@ -115,7 +115,7 @@ def admin_required(f):
 
 @app.route("/")
 def index():
-    return redirect(url_for("category", category="obiad"))
+    return render_template("index.html")
 
 @app.route("/category/<category>")
 def category(category):
@@ -183,11 +183,12 @@ def delete_comment(recipe_id, comment_id):
 
 @app.route("/login", methods=["POST"])
 def login():
-    username = request.form.get("username")
+    email = request.form.get("email")
     password = request.form.get("password")
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(email=email).first()
     if user and check_password_hash(user.password, password):
         session["username"] = user.username
+        session["email"] = user.email
         session["user_id"] = user.id
         session["is_admin"] = user.is_admin
         flash("Zalogowano pomyślnie!", "success")

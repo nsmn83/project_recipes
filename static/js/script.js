@@ -32,7 +32,7 @@ function addIngredient() {
   newItem.className = 'field-item';
   newItem.innerHTML = `
     <input type="text" name="ingredients" placeholder="np. 200 g mąki">
-    <button type="button" class="btn-delete" onclick="removeField(this)">
+    <button type="button" class="btn btn-danger" onclick="removeField(this)">
       <i class="fa fa-trash"></i>
     </button>
   `;
@@ -45,7 +45,7 @@ function addStep() {
   newItem.className = 'field-item';
   newItem.innerHTML = `
     <input type="text" name="steps" placeholder="np. Wymieszaj składniki">
-    <button type="button" class="btn-delete" onclick="removeField(this)">
+    <button type="button" class="btn btn-danger" onclick="removeField(this)">
       <i class="fa fa-trash"></i>
     </button>
   `;
@@ -59,9 +59,11 @@ function removeField(element) {
 function openModal(id) {
   document.getElementById(id).style.display = "block";
 }
+
 function closeModal(id) {
   document.getElementById(id).style.display = "none";
 }
+
 window.onclick = function(event) {
   const modals = document.getElementsByClassName('modal');
   for (let m of modals) {
@@ -108,11 +110,31 @@ window.addEventListener('resize', () => {
 
   if (window.innerWidth > 600) {
     dropdowns.forEach(dd => {
-      dd.style.display = ''; //usuniecie inline display
+      dd.style.display = '';
     });
 
     if (nav.classList.contains('responsive')) {
       nav.classList.remove('responsive');
     }
   }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const flashMessages = document.querySelectorAll('.flash-message');
+    
+    if (flashMessages.length > 0) {
+        setTimeout(function() {
+            flashMessages.forEach(function(message) {
+                message.style.transition = "opacity 0.5s ease, margin-top 0.5s ease";
+                
+                message.style.opacity = "0";
+                
+                message.style.marginTop = "-" + message.offsetHeight + "px"; 
+                
+                setTimeout(function() {
+                    message.remove();
+                }, 500);
+            });
+        }, 5000); 
+    }
 });

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Żarłwok - Strona Główna{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Żarłwok</h1>
+        <p class="hero-subtitle">it's time to cook</p>
+        
+        <a href="{{ url_for('category', category='obiad') }}" class="btn btn-primary hero-btn">
+            Odkryj przepisy
+        </a>
+    </div>
+</section>
+{% endblock %}

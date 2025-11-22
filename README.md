@@ -23,6 +23,7 @@ ADMIN_USERNAME
 ADMIN_PASSWORD
 ADMIN_EMAIL
 SECRET_KEY
+TEST_USER_PASSWORD
 POSTGRES_USER
 POSTGRES_PASSWORD
 POSTGRES_DB
@@ -43,5 +44,11 @@ Aplikacja zostanie uruchomiona na localhoście pod adresem http://127.0.0.1:5000
 ## Źródło danych
 Przepisy, instrukcje i zdjęcia pochodzą z API **[TheMealDB](https://www.themealdb.com)**.
 
-Na potrzeby projektu dane zmodyfikowane.
+Na potrzeby projektu dane zmodyfikowano - przepisy przetłumaczono na język polski, metadane przepisu takie jak czas przygotowania, liczba porcji i trudność zostałą dodana arbitralnie.
+
+
+## GUI
+Warstwa graficzna systemu opiera się na prostych stylach CSS. Zaimplementowano responsywność.  Na ten moment strona nie jest dokończa.
+
+![Strona główna](static/images/readme_screenshot_1.jpg)
 

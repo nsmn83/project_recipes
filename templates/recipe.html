@@ -3,106 +3,98 @@
 
 {% block content %}
 
-
 <article class="recipe-detail">
-
 
   <div class="recipe-container">
 
-      <aside class="recipe-info">
-        <img src="{{ url_for('static', filename='images/' + recipe.image) }}" alt="{{ recipe.name }}" class="recipe-image">
+    <aside class="recipe-info">
+      <img src="{{ url_for('static', filename='images/' + recipe.image) }}" alt="{{ recipe.name }}" class="recipe-image">
 
-        <h3>Informacje</h3>
-        <ul class="recipe-meta">
-          <li><i class="fa fa-fire"></i> Trudność: <strong>{{ recipe.difficulty }}</strong></li>
-          <li><i class="fa fa-clock-o"></i> Czas przygotowania: <strong>{{ recipe.time }}</strong></li>
-          <li><i class="fa fa-cutlery"></i> Porcje: <strong>{{ recipe.portions }}</strong></li>
-        </ul>
+      <h3>Informacje</h3>
+      <ul class="recipe-meta">
+        <li><i class="fa fa-fire"></i> Trudność: <strong>{{ recipe.difficulty }}</strong></li>
+        <li><i class="fa fa-clock-o"></i> Czas przygotowania: <strong>{{ recipe.time }}</strong></li>
+        <li><i class="fa fa-cutlery"></i> Porcje: <strong>{{ recipe.portions }}</strong></li>
+      </ul>
 
-        <h3>Składniki</h3>
-        <ul class="ingredients">
-          {% for item in recipe.ingredients %}
-            <li>{{ item.text }}</li>
-          {% endfor %}
-        </ul>
-      </aside>
+      <h3>Składniki</h3>
+      <ul class="ingredients">
+        {% for item in recipe.ingredients %}
+          <li>{{ item.text }}</li>
+        {% endfor %}
+      </ul>
+    </aside>
 
-      <section class="recipe-steps">
-        <h2 class="recipe-title">{{ recipe.name }}</h2>
+    <section class="recipe-steps">
+      <h2 class="recipe-title">{{ recipe.name }}</h2>
 
-        <h3>Przygotowanie</h3>
-        <ol class="steps">
-          {% for step in recipe.steps|sort(attribute='order') %}
-            <li><strong>KROK {{ loop.index }}:</strong> {{ step.text }}</li>
-          {% endfor %}
-        </ol>
-      </section>
-
-  </div> 
-
-
-   <div class="recipe-container">
-  <div class="comments-wrapper">
-
-    {% if session.username %}
-      <section>
-        {% if not user_comment %}
-          <button class="add-comment-btn" onclick="openModal('commentModal')">
-            Dodaj komentarz
-          </button>
-        {% else %}
-          <form action="{{ url_for('delete_comment', recipe_id=recipe.id, comment_id=user_comment.id) }}" method="POST" style="display: inline;">
-            <button type="submit" class="delete-comment-btn">
-              Usuń mój komentarz
-            </button>
-          </form>
-        {% endif %}
-      </section>
-    {% else %}
-      <section>
-        <p><a href="#" onclick="openModal('loginModal')">Zaloguj się</a>, aby dodać komentarz.</p>
-      </section>
-    {% endif %}
-
-    <section>
-      <h3>Komentarze ({{ recipe.comments|length }})</h3>
-      {% if recipe.comments %}
-        <ul class="comments-list">
-          {% for comment in recipe.comments %}
-            <li class="comment-item">
-              <div class="comment-header">
-                <div class="comment-user-info">
-                  <span class="comment-username">{{ comment.user.username }}</span>
-                  <span class="comment-date">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
-                </div>
-                <div class="comment-rating">
-                  {% for i in range(1,6) %}
-                    <span class="fa fa-star {% if i <= comment.rating %}star-checked{% endif %}"></span>
-                  {% endfor %}
-                
-                </div>
-              </div>
-              
-              <div class="comment-text">
-                <p>{{ comment.text }}</p>
-              </div>
-            </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p>Brak komentarzy. Bądź pierwszy!</p>
-      {% endif %}
+      <h3>Przygotowanie</h3>
+      <ol class="steps">
+        {% for step in recipe.steps|sort(attribute='order') %}
+          <li><strong>KROK {{ loop.index }}:</strong> {{ step.text }}</li>
+        {% endfor %}
+      </ol>
     </section>
 
-  </div> <!-- koniec comments-wrapper -->
-</div>
+  </div>
+
+  <div class="recipe-container">
+    <div class="comments-wrapper">
+
+      {% if session.username %}
+        <section>
+          {% if not user_comment %}
+            <button class="btn btn-primary" onclick="openModal('commentModal')">
+              Dodaj komentarz
+            </button>
+          {% else %}
+            <form action="{{ url_for('delete_comment', recipe_id=recipe.id, comment_id=user_comment.id) }}" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-primary">
+                Usuń mój komentarz
+              </button>
+            </form>
+          {% endif %}
+        </section>
+      {% else %}
+        <section>
+          <p><a href="#" onclick="openModal('loginModal')">Zaloguj się</a>, aby dodać komentarz.</p>
+        </section>
+      {% endif %}
+
+      <section>
+        <h3>Komentarze ({{ recipe.comments|length }})</h3>
+        {% if recipe.comments %}
+          <ul class="comments-list">
+            {% for comment in recipe.comments %}
+              <li class="comment-item">
+                <div class="comment-header">
+                  <div class="comment-user-info">
+                    <span class="comment-username">{{ comment.user.username }}</span>
+                    <span class="comment-date">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                  </div>
+                  <div class="comment-rating">
+                    {% for i in range(1,6) %}
+                      <span class="fa fa-star {% if i <= comment.rating %}star-checked{% endif %}"></span>
+                    {% endfor %}
+                  </div>
+                </div>
+                
+                <div class="comment-text">
+                  <p>{{ comment.text }}</p>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>Brak komentarzy. Bądź pierwszy!</p>
+        {% endif %}
+      </section>
+
+    </div>
+  </div>
 </article>
 
-
-
-<!-- ============================================= -->
-<!--            MODAL DODAWANIA/EDYCJI             -->
-<!-- ============================================= -->
+<!-- Modal dodawania/edycji komentarza -->
 <div id="commentModal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal('commentModal')">&times;</span>
@@ -119,7 +111,7 @@
         </div>
 
         <textarea name="text" rows="3" required>{{ user_comment.text }}</textarea>
-        <button type="submit" class="add-comment-btn">Zapisz zmiany</button>
+        <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
       </form>
     {% else %}
       <h2>Dodaj komentarz</h2>
@@ -133,19 +125,16 @@
         </div>
 
         <textarea name="text" rows="3" placeholder="Napisz komentarz..." required></textarea>
-        <button type="submit" class="add-comment-btn">Dodaj komentarz</button>
+        <button type="submit" class="btn btn-primary">Dodaj komentarz</button>
       </form>
     {% endif %}
   </div>
 </div>
 
-
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     initStarRating('.star-rating', '#rating');
 
-    // Modal functions
     window.openModal = function(id) {
       document.getElementById(id).style.display = 'block';
     }
@@ -154,7 +143,6 @@
       document.getElementById(id).style.display = 'none';
     }
 
-    // Close modal on outside click
     window.onclick = function(event) {
       let modal = document.getElementById('commentModal');
       if (event.target == modal) {

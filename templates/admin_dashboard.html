@@ -8,7 +8,7 @@
   <section class="admin-section">
     <div class="section-header">
       <h2>Przepisy ({{ recipes|length }})</h2>
-      <a href="{{ url_for('add_recipe') }}" class="add-btn">
+      <a href="{{ url_for('add_recipe') }}" class="btn btn-success">
         <i class="fa fa-plus"></i> Dodaj przepis
       </a>
     </div>
@@ -18,7 +18,8 @@
         <thead>
           <tr>
             <th style="width: 5%;">ID</th>
-            <th style="width: 30%;">Nazwa</th> <th style="width: 15%;">Kategoria</th>
+            <th style="width: 30%;">Nazwa</th>
+            <th style="width: 15%;">Kategoria</th>
             <th style="width: 10%;">Czas</th>
             <th style="width: 10%;">Trudność</th>
             <th style="width: 10%;">Ocena</th>
@@ -35,17 +36,17 @@
             <td>{{ recipe.difficulty }}</td>
             <td>{{ recipe.rating }}</td>
             <td class="action-buttons" style="text-align: center;">
-                <a href="{{ url_for('admin_edit_recipe', recipe_id=recipe.id) }}" class="btn-edit" title="Edytuj">
-                    <i class="fa fa-edit"></i>
-                </a>
-                <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="btn-view" title="Podgląd">
-    <i class="fa fa-eye"></i>
-</a>
-                <form action="{{ url_for('admin_delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Czy na pewno chcesz usunąć ten przepis?');">
-                    <button type="submit" class="btn-delete" title="Usuń">
-                    <i class="fa fa-trash"></i>
-                    </button>
-                </form>
+              <a href="{{ url_for('admin_edit_recipe', recipe_id=recipe.id) }}" class="btn btn-warning" title="Edytuj">
+                <i class="fa fa-edit"></i>
+              </a>
+              <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="btn btn-info" title="Podgląd">
+                <i class="fa fa-eye"></i>
+              </a>
+              <form action="{{ url_for('admin_delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Czy na pewno chcesz usunąć ten przepis?');">
+                <button type="submit" class="btn btn-danger" title="Usuń">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </form>
             </td>
           </tr>
           {% endfor %}
@@ -73,22 +74,22 @@
             <td>{{ user.id }}</td>
             <td>{{ user.username }}</td>
             <td>
-                {% if user.is_admin %}
-                <span class="badge-admin">Admin</span>
-                {% else %}
-                User
-                {% endif %}
+              {% if user.is_admin %}
+              <span class="badge-admin">Admin</span>
+              {% else %}
+              User
+              {% endif %}
             </td>
             <td>{{ user.comments|length }}</td>
             <td class="action-buttons" style="text-align: center;">
               {% if user.id != session['user_id'] %}
               <form action="{{ url_for('admin_delete_user', user_id=user.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Usunąć użytkownika?');">
-                <button type="submit" class="btn-delete">
+                <button type="submit" class="btn btn-danger">
                   <i class="fa fa-trash"></i>
                 </button>
               </form>
               {% else %}
-                <span class="text-muted" style="font-size: 0.8em;">(Ty)</span>
+              <span class="text-muted">(Ty)</span>
               {% endif %}
             </td>
           </tr>
@@ -108,7 +109,8 @@
             <th style="width: 15%;">Kto</th>
             <th style="width: 15%;">Gdzie</th>
             <th style="width: 10%;">Ocena</th>
-            <th style="width: 40%;">Treść</th> <th style="width: 15%; text-align: center;">Akcje</th>
+            <th style="width: 40%;">Treść</th>
+            <th style="width: 15%; text-align: center;">Akcje</th>
           </tr>
         </thead>
         <tbody>
@@ -121,13 +123,13 @@
               <span style="color: #f39c12;">★</span> {{ comment.rating }}
             </td>
             <td>
-                <div class="comment-text" title="{{ comment.text }}">
-                    {{ comment.text }}
-                </div>
+              <div class="comment-text" title="{{ comment.text }}">
+                {{ comment.text }}
+              </div>
             </td>
             <td class="action-buttons" style="text-align: center;">
               <form action="{{ url_for('admin_delete_comment', comment_id=comment.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Usunąć komentarz?');">
-                <button type="submit" class="btn-delete">
+                <button type="submit" class="btn btn-danger">
                   <i class="fa fa-trash"></i>
                 </button>
               </form>
@@ -140,149 +142,4 @@
   </section>
 </div>
 
-<style>
-
-.admin-container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  font-family: sans-serif;
-}
-
-.admin-container h1 {
-  color: #6d181c;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-
-.admin-section {
-  background: #fff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.admin-section h2 {
-  color: #6d181c;
-  margin: 0;
-  font-size: 1.4rem;
-}
-
-.admin-table-wrapper {
-  max-height: 500px; 
-  overflow-y: auto;  
-  overflow-x: auto;  
-  border: 1px solid #eee;
-  border-radius: 6px;
-  scrollbar-width: thin;
-  scrollbar-color: #6d181c #f1f1f1;
-}
-
-.admin-table {
-  width: 100%;            
-  border-collapse: collapse;
-  table-layout: fixed;   
-  min-width: 600px;        
-}
-
-.admin-table thead th {
-  position: sticky;
-  top: 0;
-  background-color: #6d181c;
-  color: white;
-  z-index: 10;
-  padding: 14px;
-  text-align: left;
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.admin-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid #eee;
-  color: #333;
-  vertical-align: middle; 
-  
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.admin-table tbody tr:hover {
-  background-color: #fff5f5; 
-}
-
-
-.comment-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-}
-
-
-.add-btn {
-    background-color: #27ae60;
-    color: white;
-    text-decoration: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.9rem;
-    transition: background 0.2s;
-}
-.add-btn:hover { background-color: #219150; }
-
-.btn-delete, .btn-edit, .btn-view {
-  border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  color: white;
-  margin: 0 2px;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-delete { background-color: #e74c3c; }
-.btn-delete:hover { background-color: #c0392b; }
-
-.btn-edit { background-color: #f39c12; }
-.btn-edit:hover { background-color: #d35400; }
-
-.btn-view { background-color: #3498db; }
-.btn-view:hover { background-color: #2980b9; }
-
-.badge-admin {
-    background-color: #6d181c;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-}
-
-.admin-table-wrapper::-webkit-scrollbar {
-  width: 8px;
-}
-.admin-table-wrapper::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-.admin-table-wrapper::-webkit-scrollbar-thumb {
-  background: #6d181c;
-  border-radius: 4px;
-}
-.admin-table-wrapper::-webkit-scrollbar-thumb:hover {
-  background: #551316;
-}
-
-</style>
 {% endblock %}

@@ -32,166 +32,29 @@
   <label for="image">Zdjęcie przepisu:</label>
   <input type="file" id="image" name="image" accept="image/*">
 
-
   <div id="ingredients-container" class="dynamic-field">
     <label>Składniki:</label>
     <div class="field-item">
       <input type="text" name="ingredients" placeholder="np. 200 g mąki">
-      <button type="button" class="btn-delete" onclick="removeField(this)">
+      <button type="button" class="btn btn-danger" onclick="removeField(this)">
         <i class="fa fa-trash"></i>
       </button>
     </div>
   </div>
-  <button type="button" class="add-btn" onclick="addIngredient()">+ Dodaj składnik</button>
-
+  <button type="button" class="btn btn-primary" style="margin-top: 10px;" onclick="addIngredient()">+ Dodaj składnik</button>
 
   <div id="steps-container" class="dynamic-field">
     <label>Kroki przygotowania:</label>
     <div class="field-item">
       <input type="text" name="steps" placeholder="np. Wymieszaj składniki">
-      <button type="button" class="btn-delete" onclick="removeField(this)">
+      <button type="button" class="btn btn-danger" onclick="removeField(this)">
         <i class="fa fa-trash"></i>
       </button>
     </div>
   </div>
-  <button type="button" class="add-btn" onclick="addStep()">+ Dodaj krok</button>
+  <button type="button" class="btn btn-primary" style="margin-top: 10px;" onclick="addStep()">+ Dodaj krok</button>
 
-  <button type="submit" class="submit-btn">Zapisz przepis</button>
+  <button type="submit" class="btn btn-dark" style="margin-top: 20px;">Zapisz przepis</button>
 </form>
 
-<style>
-
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
-ol li { list-style-type: none; }
-
-
-.recipe-form {
-  display: flex;
-  flex-direction: column;
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.recipe-form h2 {
-  color: #6d181c;
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.recipe-form label {
-  font-weight: bold;
-  margin-top: 10px;
-  color: #333;
-}
-
-.recipe-form input,
-.recipe-form select {
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-}
-
-
-.add-btn {
-  margin-top: 10px;
-  background-color: #703c3e;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-.add-btn:hover { background-color: #8b2327; }
-
-.submit-btn {
-  margin-top: 20px;
-  padding: 12px;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1.1rem;
-}
-.submit-btn:hover { background-color: #000; }
-
-
-.dynamic-field .field-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.dynamic-field input { 
-  flex: 1; 
-  display: block; 
-  width: 100%; 
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-}
-
-
-.btn-delete {
-  background-color: #c9302c;
-  color: #fff;              
-  border: none;
-  border-radius: 8px;
-  width: 40px;
-  height: 40px; 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: opacity 0.3s;
-}
-
-.btn-delete:hover {
-  opacity: 0.8;
-}
-
-/* Layout przepisu (do podglądu) */
-.recipe-layout {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 2rem;
-  max-width: 1000px;
-  margin: 40px auto;
-}
-.recipe-info {
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 1.5rem;
-}
-.recipe-image { width: 100%; display: block; height: 300px; object-fit: cover; }
-
-.recipe-steps {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 1.5rem;
-}
-.recipe-title { font-size: 2rem; color: #6d181c; margin-top: 0; margin-bottom: 1rem; }
-.steps { padding-left: 1.2rem; line-height: 1.6; }
-.steps li { margin-bottom: 1rem; }
-.steps li strong { display: block; font-weight: bold; color: #c75c1a; margin-bottom: 0.3rem; }
-
-
-@media (max-width: 768px) {
-  .recipe-form { width: 90%; padding: 15px; }
-  .recipe-layout { grid-template-columns: 1fr; }
-  .recipe-info { order: -1; } 
-}
-</style>
 {% endblock %}
