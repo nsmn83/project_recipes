@@ -14,6 +14,7 @@ app.secret_key = os.getenv("SECRET_KEY", "fallback_key")
 
 ADMIN_USERNAME=os.getenv("ADMIN_USERNAME")
 ADMIN_PASSWORD=os.getenv("ADMIN_PASSWORD")
+ADMIN_EMAIL=os.getenv("ADMIN_EMAIL")
 
 DB_USER = os.getenv("POSTGRES_USER")
 DB_PASS = os.getenv("POSTGRES_PASSWORD")
@@ -34,6 +35,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     
@@ -197,16 +199,20 @@ def login():
 
 @app.route("/register", methods=["POST"])
 def register():
+    '''
     username = request.form.get("username")
+    email = request.form.get("email")
     password = request.form.get("password")
     if User.query.filter_by(username=username).first():
         flash("Użytkownik już istnieje!", "error")
         return redirect(url_for("index"))
-    new_user = User(username=username, password=generate_password_hash(password), is_admin=False)
+    new_user = User(username=username, email=email, password=generate_password_hash(password), is_admin=False)
     db.session.add(new_user)
     db.session.commit()
     flash("Zarejestrowano pomyślnie!", "success")
     return redirect(url_for("index"))
+    '''
+    pass
 
 @app.route("/logout")
 def logout():
@@ -350,6 +356,20 @@ def admin_recipe_steps(recipe_id):
     recipe = Recipe.query.get_or_404(recipe_id)
     return render_template("admin_steps.html", recipe=recipe)
 
+@app.route("/profile/delete", methods=["POST"])
+@login_required
+def delete_my_account():
+    user = User.query.get_or_404(session["user_id"])
+    
+    db.session.delete(user)
+    db.session.commit()
+    
+    session.clear()
+    
+    flash("Twoje konto zostało trwale usunięte. Dane zniknęły z bazy.", "success")
+    return redirect(url_for("index"))
+
+
 @app.route("/admin/recipe/<int:recipe_id>/step/add", methods=["POST"])
 @admin_required
 def admin_add_step(recipe_id):
@@ -394,6 +414,7 @@ def init_db():
                 admin_user = User(
                     username=ADMIN_USERNAME,
                     password=generate_password_hash(ADMIN_PASSWORD),
+                    email=ADMIN_EMAIL,
                     is_admin=True
                 )
                 db.session.add(admin_user)

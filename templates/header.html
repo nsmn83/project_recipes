@@ -1,7 +1,9 @@
 <div class="topnav" id="myTopnav">
+
   <a href="{{ url_for('index') }}" class="{% if request.path == url_for('index') %}active{% endif %}">
     Strona główna
   </a>
+
 
   <div class="dropdown">
     <a href="javascript:void(0);" 
@@ -10,7 +12,7 @@
        Przepisy
     </a>
     <div class="dropdown-content">
-      <a href="{{ url_for('category', category='śniadanie') }}">Śniadania</a>
+      <a href="{{ url_for('category', category='sniadanie') }}">Śniadania</a>
       <a href="{{ url_for('category', category='obiad') }}">Obiady</a>
       <a href="{{ url_for('category', category='kolacja') }}">Kolacje</a>
       <a href="{{ url_for('category', category='deser') }}">Desery</a>
@@ -33,22 +35,25 @@
     </div>
   </div>
 
+
   <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
     <i class="fa fa-bars"></i>
   </a>
 </div>
+
 
 <div id="loginModal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeModal('loginModal')">&times;</span>
     <h2>Logowanie</h2>
     <form action="{{ url_for('login') }}" method="POST">
-      <input type="text" name="username" placeholder="Nazwa użytkownika" required>
+      <input type="text" name="email" placeholder="email" required> 
       <input type="password" name="password" placeholder="Hasło" required>
       <button type="submit">Zaloguj się</button>
     </form>
   </div>
 </div>
+
 
 <div id="registerModal" class="modal">
   <div class="modal-content">
@@ -56,8 +61,13 @@
     <h2>Rejestracja</h2>
     <form action="{{ url_for('register') }}" method="POST">
       <input type="text" name="username" placeholder="Nazwa użytkownika" required>
+      <input type="text" name="email" placeholder="Adres e-mail" required>
       <input type="password" name="password" placeholder="Hasło" required>
       <button type="submit">Zarejestruj się</button>
     </form>
+     <p>Ze względu na niepełną politykę prywatności firmy, 
+      możliwość założenia konta jest tymczasowo zawieszona.
+      Strona nie przechowuje danych użytkowników.
+    </p>
   </div>
 </div>
