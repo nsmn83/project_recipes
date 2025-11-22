@@ -26,11 +26,7 @@
     </a>
     <div class="dropdown-content">
       {% if session.get('username') %}
-        <a href="{{ url_for('add_recipe') }}">Dodaj przepis</a>
         <a href="#">Profil</a>
-        {% if session.get('is_admin') %}
-          <a href="{{ url_for('admin_dashboard') }}">Panel admina</a>
-        {% endif %}
         <a href="{{ url_for('logout') }}">Wyloguj</a>
       {% else %}
         <a href="javascript:void(0);" onclick="openModal('loginModal')">Zaloguj się</a>

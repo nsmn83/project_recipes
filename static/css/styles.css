@@ -12,7 +12,7 @@ ol li{
   list-style-type: none;
 }
 
-/*formularz wyszikiwania*/
+
 .search-form {
     display: flex;
     justify-content: center;
@@ -42,8 +42,6 @@ ol li{
 }
 
 
-/*przepis poczatek*/
-/* Główny layout przepisu */
 .recipe-layout {
     display: flex;
     flex-wrap: wrap;
@@ -57,7 +55,6 @@ ol li{
     border-radius: 12px;
 }
 
-/* Lewa kolumna – kroki */
 .recipe-steps {
     flex: 2;
     min-width: 300px;
@@ -69,7 +66,6 @@ ol li{
     color: #6d181c;
 }
 
-/* Prawa kolumna – zdjęcie + meta + składniki */
 .recipe-info {
     flex: 1;
     min-width: 250px;
@@ -104,14 +100,12 @@ ol li{
     text-align: left;
 }
 
-/* Kroki */
 .steps {
     list-style-type: decimal;
     padding-left: 20px;
     line-height: 1.6;
 }
 
-/* Responsywność */
 @media (max-width: 768px) {
     .recipe-layout {
         flex-direction: column;
@@ -119,13 +113,12 @@ ol li{
     }
 
     .recipe-info {
-        order: -1; /* zdjęcie idzie na górę */
+        order: -1;
     }
 }
 
 
 
-/* przepis koniec*/
 .topnav {
   overflow: hidden;
   background-color: #6d181c;
@@ -150,8 +143,6 @@ ol li{
   display: none;
 }
 
-/* DROPDOWN W NAWIGACJI*/
-/* Dropdown container */
 .topnav .dropdown {
   float: left;
   overflow: hidden;
@@ -167,7 +158,7 @@ ol li{
 }
 
 .topnav .dropdown:hover .dropdown-content {
-  display: block; /* desktop hover */
+  display: block; 
 }
 
 .topnav .dropdown .dropdown-content a {
@@ -183,13 +174,11 @@ ol li{
   display: block;
 }
 
-/* Hover effect for dropdown items */
 .topnav .dropdown .dropdown-content a:hover {
   background-color: #ddd;
   color: black;
 }
 
-/* Caret icon style */
 .topnav .dropdown a i {
   margin-left: 5px;
 }
@@ -198,9 +187,9 @@ ol li{
 
 .recipe-list {
   display: grid;
-  justify-content: center; /* ⬅️ ustawia wszystko na środku */
-  grid-template-columns: repeat(auto-fill, 280px); /* ⬅️ stała szerokość kart */
-  gap: 25px; /* ⬅️ odstęp między kartami */
+  justify-content: center; 
+  grid-template-columns: repeat(auto-fill, 280px); 
+  gap: 25px; 
   padding: 20px;
 }
 
@@ -211,7 +200,7 @@ ol li{
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     text-align: center;
     transition: transform 0.2s;
-    max-width: 300px; /* 👈 sets a maximum card width */
+    max-width: 300px;
     
 }
 
@@ -221,8 +210,8 @@ ol li{
 
 .card img {
     width: 100%;
-    height: 180px;        /* uniform height for all cards */
-    object-fit: cover;    /* crop image nicely */
+    height: 180px;        
+    object-fit: cover;  
     display: block;
 }
 
@@ -279,7 +268,7 @@ ol li{
  
 
   @media screen and (max-width: 600px) {
-    .topnav .dropdown { /* <-- dodane .dropdown */
+    .topnav .dropdown { 
     display: none;
   }
   .topnav a:not(:first-child) {display: none;}
@@ -287,19 +276,15 @@ ol li{
 
     .topnav.responsive {position: relative;}
   .topnav.responsive a {float: none; display: block; text-align: left;}
-  .topnav.responsive .dropdown {float: none; display: block;} /* pokazuje po kliknięciu */
+  .topnav.responsive .dropdown {float: none; display: block;}
   .topnav.responsive .dropdown .dropdown-content {
     position: relative; 
-    display: none; /* nadal schowane, pokaże JS po kliknięciu */
+    display: none; 
   }
 }
 }
 
 
-
-/*==========================*/
-
-/* === OGÓLNY KONTENER === */
 .recipe-container {
   max-width: 1100px;
   margin: 2rem auto;
@@ -308,10 +293,9 @@ ol li{
   color: #222;
 }
 
-/* === UKŁAD DWUKOLUMNOWY === */
 .recipe-layout {
   display: grid;
-  grid-template-columns: 1fr 2fr; /* lewa węższa, prawa szersza */
+  grid-template-columns: 1fr 2fr; 
   gap: 2rem;
 }
 
@@ -321,7 +305,6 @@ ol li{
   }
 }
 
-/* === LEWA KOLUMNA === */
 .recipe-info {
   background: #f9f9f9;
   border: 1px solid #ddd;
@@ -332,7 +315,7 @@ ol li{
 .recipe-image {
     width: 100%;
     display: block;
-        height: 300px; /* możesz dopasować np. 250px, 400px itd. */
+        height: 300px; 
     object-fit: cover;
 }
 
@@ -368,7 +351,6 @@ ol li{
   line-height: 1.6;
 }
 
-/* === PRAWA KOLUMNA === */
 .recipe-steps {
   background: #fff;
   border: 1px solid #ddd;
@@ -407,7 +389,6 @@ ol li{
 }
 
 
-/* Dodawanie przepisu*/
 .recipe-form {
   display: flex;
   flex-direction: column;
@@ -491,42 +472,87 @@ ol li{
   color: #e00;
 }
 
-/* Koniec dodawania przepisu*/
-/*modale logowania i rejestracji */
-/* KOD DODANY PRZEZ CIEBIE W NASZEJ ROZMOWIE */
 
 .modal {
   display: none;
   position: fixed;
   z-index: 1000;
-  padding-top: 100px;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease;
 }
 
 .modal-content {
-  background-color: #fff;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 300px;
-  border-radius: 10px;
+  background-color: #fff; 
+  margin: 100px auto;
+  padding: 25px 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeInDown 0.4s ease-out;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #222;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .close {
-  color: #aaa;
+  color: #6d181c; 
   float: right;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: bold;
   cursor: pointer;
 }
 
 .close:hover {
-  color: black;
+  color: #8a1f25;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-content input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.modal-content input:focus {
+  border-color: #6d181c;
+  outline: none;
+}
+
+.modal-content button {
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background-color: #6d181c;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #8a1f25;
 }
 
 .admin-panel {
@@ -548,116 +574,178 @@ ol li{
   color: #555;
 }
 
-/* dodawanie ocen*/
-/* === BLOK DODAWANIA KOMENTARZA === */
-.comment-section {
+.comments-wrapper {
+  width: 100%;            
+  margin: 2rem 0;         
   background: #fff;
+  padding: 0;
   border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.comments-wrapper section {
   padding: 1.5rem;
-  margin-top: 2rem;
 }
 
-.comment-section h3 {
-  color: #c75c1a;
-  margin-bottom: 1rem;
-}
-
-.comment-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding-right: 1rem;
-}
-
-.comment-form textarea {
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 10px;
-  resize: vertical;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.comment-form textarea,
-.comment-form .add-btn {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* === LISTA KOMENTARZY === */
-.comment-section,
-.comments-section {
-  max-width: 1000px;
-  margin: 2rem auto;
-  border: 1px solid #ddd;
-  padding: 1.5rem;
-  background: #fff;
-}
-
-.comments-section {
+.comments-wrapper section:first-child {
+  border-bottom: 1px solid #eee;
   background: #f9f9f9;
 }
 
-.comment-section h3,
-.comments-section h3 {
+.comments-wrapper h3 {
   color: #6d181c;
   margin-bottom: 1rem;
+  font-size: 1.3rem;
 }
 
-.comment-form textarea {
-  width: 100%;
-  border: 1px solid #ccc;
-  padding: 10px;
-  resize: vertical;
-  font-family: inherit;
+
+.add-comment-btn, .delete-comment-btn {
+  background-color: #6d181c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.add-comment-btn:hover, .delete-comment-btn:hover {
+  background-color: #8a1f25;
 }
 
 .comments-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .comment-item {
-  border-bottom: 1px solid #eee;
-  padding: 0.8rem 0;
+  padding: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fff;
 }
 
 .comment-item:last-child {
   border-bottom: none;
 }
 
-.user-comment {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  background: #fdfdfd;
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.delete-btn {
-  background-color: #a00;
+.comment-user-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.comment-username {
+  font-weight: bold;
+  color: #6d181c;
+  margin-bottom: 0.2rem;
+  font-size: 1rem;
+}
+
+.comment-date {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.comment-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.comment-text {
+  line-height: 1.6;
+  color: #333;
+  margin: 0;
+}
+
+.btn-delete {
+  background-color: #f44336;
   color: white;
   border: none;
   padding: 6px 10px;
+  border-radius: 4px;
   cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-.delete-btn:hover {
-  background-color: #c00;
+.delete-icon:hover {
+  color: #c00;
 }
 
-.comments-wrapper {
-  max-width: 1000px; /* ⬅️ identycznie jak .recipe-layout */
-  margin: 0 auto;    /* wyśrodkowanie */
-  background: #fff;
-  padding: 20px;
-  border: 1px solid #ddd;
+.modal-content .comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-content textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 12px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 1rem;
   box-sizing: border-box;
 }
 
-.comments-wrapper section {
-  margin-bottom: 2rem;
-}
 
-.comments-wrapper h3 {
-  color: #6d181c;
+
+@media (max-width: 768px) {
+  .comments-wrapper {
+    border-radius: 6px;
+    margin: 1.5rem 0;
+  }
 }
+  
+  
+  .comment-item {
+    padding: 1rem;
+  }
+  
+  .comment-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .comment-rating {
+    margin-top: 0.3rem;
+  }
+
+    .recipe-container {
+    display: block;
+  }
+
+  @media (min-width: 900px) {
+    .recipe-container {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .recipe-info {
+      width: 30%;
+    }
+
+    .recipe-steps {
+      width: 70%;
+    }
+  }
+
+  .comments-wrapper {
+    margin-top: 40px;
+  }
