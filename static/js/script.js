@@ -31,32 +31,32 @@ function toggleDropdown(event) {
 
 function addIngredient() {
   const container = document.getElementById('ingredients-container');
-  const field = document.createElement('div');
-  field.classList.add('field-item');
-
-  field.innerHTML = `
-    <input type="text" name="ingredients" placeholder="np. 1 łyżka cukru">
-    <i class="fa fa-trash remove-icon" onclick="removeField(this)"></i>
+  const newItem = document.createElement('div');
+  newItem.className = 'field-item';
+  newItem.innerHTML = `
+    <input type="text" name="ingredients" placeholder="np. 200 g mąki">
+    <button type="button" class="btn-delete" onclick="removeField(this)">
+      <i class="fa fa-trash"></i>
+    </button>
   `;
-
-  container.appendChild(field);
+  container.appendChild(newItem);
 }
 
 function addStep() {
   const container = document.getElementById('steps-container');
-  const field = document.createElement('div');
-  field.classList.add('field-item');
-
-  field.innerHTML = `
+  const newItem = document.createElement('div');
+  newItem.className = 'field-item';
+  newItem.innerHTML = `
     <input type="text" name="steps" placeholder="np. Wymieszaj składniki">
-    <i class="fa fa-trash remove-icon" onclick="removeField(this)"></i>
+    <button type="button" class="btn-delete" onclick="removeField(this)">
+      <i class="fa fa-trash"></i>
+    </button>
   `;
-
-  container.appendChild(field);
+  container.appendChild(newItem);
 }
 
-function removeField(icon) {
-  icon.parentElement.remove();
+function removeField(element) {
+  element.closest('.field-item').remove();
 }
 
 //logowanie i rejestracja
@@ -105,3 +105,19 @@ function initStarRating(containerSelector, inputSelector) {
     });
   });
 }
+
+window.addEventListener('resize', () => {
+  const nav = document.getElementById("myTopnav");
+  const dropdowns = nav.querySelectorAll('.dropdown .dropdown-content');
+
+  if (window.innerWidth > 600) {
+    dropdowns.forEach(dd => {
+      dd.style.display = ''; // usuwa inline display, pozwala CSS zrobić swoje
+    });
+
+    // usuń klasę responsive jeśli była
+    if (nav.classList.contains('responsive')) {
+      nav.classList.remove('responsive');
+    }
+  }
+});
