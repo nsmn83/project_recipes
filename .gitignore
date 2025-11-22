@@ -1,0 +1,50 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.so
+
+# --- Virtual environment ---
+venv/
+ENV/
+env/
+.venv/
+
+# --- SQLite ---
+instance/
+*.sqlite
+*.sqlite3
+*.db
+
+# --- Flask cache / session ---
+*.log
+*.pot
+*.pyc
+
+# --- VS Code ---
+.vscode/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Python packaging ---
+*.egg
+*.egg-info/
+dist/
+build/
+
+# --- Environment variables ---
+.env
+*.env
+
+# --- Pytest / coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- __old / backup files ---
+*.bak
+*.swp
