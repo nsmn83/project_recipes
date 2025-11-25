@@ -5,6 +5,8 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from functools import wraps
 from dotenv import load_dotenv
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import os
 
 load_dotenv()
@@ -21,6 +23,11 @@ DB_NAME = os.getenv("POSTGRES_DB")
 DB_HOST = os.getenv("POSTGRES_HOST")
 DB_PORT = int(os.getenv("POSTGRES_PORT"))
 
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    headers_enabled=True
+)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -97,7 +104,7 @@ def calculate_rating(recipe):
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if "username" not in session:
+        if not session.get("user_id"):
             flash("Musisz być zalogowany, aby uzyskać dostęp.", "error")
             return redirect(url_for("index"))
         return f(*args, **kwargs)
@@ -138,6 +145,7 @@ def recipe_detail(recipe_id):
             user_comment = Comment.query.filter_by(recipe_id=recipe.id, user_id=user.id).first()
     return render_template("recipe.html", recipe=recipe, user_comment=user_comment)
 
+@limiter.limit("5 per minute")
 @app.route("/recipe/<int:recipe_id>/add_comment", methods=["POST"])
 @login_required
 def add_comment(recipe_id):
@@ -180,6 +188,7 @@ def delete_comment(recipe_id, comment_id):
     flash("Komentarz usunięty.", "success")
     return redirect(url_for("recipe_detail", recipe_id=recipe_id))
 
+@limiter.limit("5 per minute")
 @app.route("/login", methods=["POST"])
 def login():
     email = request.form.get("email")
@@ -197,6 +206,7 @@ def login():
         flash("Nieprawidłowe dane logowania", "error")
     return redirect(url_for("index"))
 
+@limiter.limit("5 per minute")
 @app.route("/register", methods=["POST"])
 def register():
     '''
@@ -221,6 +231,7 @@ def logout():
     return redirect(url_for("index"))
 
 
+@limiter.limit("10 per minute")
 @app.route("/admin")
 @admin_required
 def admin_dashboard():
@@ -252,6 +263,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@limiter.limit("25 per minute")
 @app.route("/admin/recipe/add", methods=["GET", "POST"])
 @admin_required
 def add_recipe():
@@ -427,4 +439,4 @@ init_db()
 if __name__ == "__main__":
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
-    app.run(debug=True)
+    app.run()
