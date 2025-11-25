@@ -11,8 +11,7 @@
     {% if 'http' in recipe.image %}
     <img src="{{ recipe.image }}" alt="{{ recipe.name }}" class="recipe-image">
     {% else %}
-    <img src="{{ url_for('static', filename='images/' + placeholder.jpg)}}" alt="{{ recipe.name }}" class="recipe-image">
-    {% endif %}
+    <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="{{ recipe.name }}">
       <h3>Informacje</h3>
       <ul class="recipe-meta">
         <li><i class="fa fa-fire"></i> Trudność: <strong>{{ recipe.difficulty }}</strong></li>

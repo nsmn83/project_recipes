@@ -370,8 +370,7 @@ ol li {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   text-align: center;
-  transition: transform var(--transition-fast);
-  max-width: 300px;
+  max-width: 280px;
 }
 
 .card .rating {
@@ -513,9 +512,7 @@ ol li {
   margin-bottom: 0.3rem;
 }
 
-/* ========================================
-   FORMS
-   ======================================== */
+/* formularze */
 .recipe-form {
   display: flex;
   flex-direction: column;
@@ -937,18 +934,16 @@ ol li {
   }
 }
 
-@media (max-width: 768px) {
-
-  .card p {
-    display: none;
-  }
-}
 
 @media screen and (max-width: 600px) {
   .recipe-list {
     grid-template-columns: repeat(2, 1fr);
     gap: 15px; 
     justify-items: center; 
+  }
+
+  .card p {
+    display: none;
   }
 
   .topnav a:not(:first-child) {
