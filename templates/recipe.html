@@ -8,25 +8,26 @@
   <div class="recipe-container">
 
     <aside class="recipe-info">
-    {% if 'http' in recipe.image %}
+  {% if 'http' in recipe.image %}
     <img src="{{ recipe.image }}" alt="{{ recipe.name }}" class="recipe-image">
-    {% else %}
+  {% else %}
     <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="{{ recipe.name }}">
-      <h3>Informacje</h3>
-      <ul class="recipe-meta">
-        <li><i class="fa fa-fire"></i> Trudność: <strong>{{ recipe.difficulty }}</strong></li>
-        <li><i class="fa fa-clock-o"></i> Czas przygotowania: <strong>{{ recipe.time }}</strong></li>
-        <li><i class="fa fa-cutlery"></i> Porcje: <strong>{{ recipe.portions }}</strong></li>
-      </ul>
+  {% endif %}
 
-      <h3>Składniki</h3>
-      <ul class="ingredients">
-        {% for item in recipe.ingredients %}
-          <li>{{ item.text }}</li>
-        {% endfor %}
-      </ul>
-    </aside>
+  <h3>Informacje</h3>
+  <ul class="recipe-meta">
+    <li><i class="fa fa-fire"></i> Trudność: <strong>{{ recipe.difficulty }}</strong></li>
+    <li><i class="fa fa-clock-o"></i> Czas przygotowania: <strong>{{ recipe.time }}</strong></li>
+    <li><i class="fa fa-cutlery"></i> Porcje: <strong>{{ recipe.portions }}</strong></li>
+  </ul>
 
+  <h3>Składniki</h3>
+  <ul class="ingredients">
+    {% for item in recipe.ingredients %}
+      <li>{{ item.text }}</li>
+    {% endfor %}
+  </ul>
+</aside>
     <section class="recipe-steps">
       <h2 class="recipe-title">{{ recipe.name }}</h2>
 
