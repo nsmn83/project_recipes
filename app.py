@@ -21,8 +21,7 @@ cloudinary.config(
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
-
-DATABASE_URL = os.getnev("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 limiter = Limiter(
     get_remote_address,
@@ -270,8 +269,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route("/admin/recipe/add", methods=["GET", "POST"])
-@admin_required
+
 @app.route("/admin/recipe/add", methods=["GET", "POST"])
 @admin_required
 def add_recipe():
@@ -320,8 +318,6 @@ def add_recipe():
 
 @app.route("/admin/recipe/<int:recipe_id>/edit", methods=["GET", "POST"])
 @admin_required
-@app.route("/admin/recipe/<int:recipe_id>/edit", methods=["GET", "POST"])
-@admin_required
 def admin_edit_recipe(recipe_id):
     recipe = Recipe.query.get_or_404(recipe_id)
     
@@ -349,8 +345,6 @@ def admin_edit_recipe(recipe_id):
         
     return render_template("admin_edit_recipe.html", recipe=recipe)
 
-@app.route("/admin/recipe/<int:recipe_id>/delete", methods=["POST"])
-@admin_required
 @app.route("/admin/recipe/<int:recipe_id>/delete", methods=["POST"])
 @admin_required
 def admin_delete_recipe(recipe_id):
@@ -449,24 +443,12 @@ def admin_delete_comment(comment_id):
     flash("Komentarz usunięty!", "success")
     return redirect(url_for("admin_dashboard"))
 
-def init_db():
-    with app.app_context():
-        db.create_all()
-        
-        if ADMIN_USERNAME and ADMIN_PASSWORD:
-            if not User.query.filter_by(username=ADMIN_USERNAME).first():
-                admin_user = User(
-                    username=ADMIN_USERNAME,
-                    password=generate_password_hash(ADMIN_PASSWORD),
-                    email=ADMIN_EMAIL,
-                    is_admin=True
-                )
-                db.session.add(admin_user)
-                db.session.commit()
-                print("--- BAZA ZAINICJOWANA, ADMIN UTWORZONY ---")
-
-
-init_db()
+#Inicjalizacja bazy danych - obecnie używany jest Render
+#def init_db():
+#    with app.app_context():
+#        db.create_all()
+#        
+#init_db()
 
 if __name__ == "__main__":
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)

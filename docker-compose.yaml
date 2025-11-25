@@ -9,10 +9,10 @@ services:
       - ./instance:/app/instance
     env_file:
     - .env
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: always
+#    depends_on:
+#     db:
+#       condition: service_healthy
+#   restart: always
 
 # Setting up DB - no longer needed
 #  db:
