@@ -36,9 +36,6 @@
             <td>{{ recipe.difficulty }}</td>
             <td>{{ recipe.rating }}</td>
             <td class="action-buttons" style="text-align: center;">
-              <a href="{{ url_for('admin_edit_recipe', recipe_id=recipe.id) }}" class="btn btn-warning" title="Edytuj">
-                <i class="fa fa-edit"></i>
-              </a>
               <a href="{{ url_for('recipe_detail', recipe_id=recipe.id) }}" class="btn btn-info" title="Podgląd">
                 <i class="fa fa-eye"></i>
               </a>
@@ -107,6 +104,7 @@
           <tr>
             <th style="width: 5%;">ID</th>
             <th style="width: 15%;">Kto</th>
+            <th style="width: 15%;">ID użytkownika</th>
             <th style="width: 15%;">Gdzie</th>
             <th style="width: 10%;">Ocena</th>
             <th style="width: 40%;">Treść</th>
@@ -118,6 +116,7 @@
           <tr>
             <td>{{ comment.id }}</td>
             <td>{{ comment.user.username }}</td>
+            <td>{{ comment.user_id}}</td>
             <td><a href="{{ url_for('recipe_detail', recipe_id=comment.recipe.id) }}">{{ comment.recipe.name|truncate(20) }}</a></td>
             <td>
               <span style="color: #f39c12;">★</span> {{ comment.rating }}

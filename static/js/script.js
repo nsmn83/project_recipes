@@ -88,7 +88,8 @@ window.onclick = function(event) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-  initStarRating('.star-rating', '#rating');
+  initStarRating('#commentModal .comment-form .star-rating', '#rating-new'); 
+  initStarRating('#commentModal .comment-form .star-rating', '#rating-edit'); 
 
   const flashMessages = document.querySelectorAll('.flash-message');
   if (flashMessages.length > 0) {

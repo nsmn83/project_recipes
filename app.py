@@ -11,6 +11,7 @@ import cloudinary
 import cloudinary.uploader
 import os
 
+# Konfiguracja backendu
 load_dotenv()
 
 cloudinary.config(
@@ -30,7 +31,6 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 
-
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -39,7 +39,10 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+
+# Modele obiektów dla bazy danych
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -98,7 +101,7 @@ class Comment(db.Model):
     def __repr__(self):
         return f"<Comment {self.id}>"
 
-# --- Funkcja wyciągająca public_id z URL Cloudinary
+#Funkcja wyciagając public id obiektu z cloudinary
 def get_public_id_from_url(url):
     try:
         if not url: return None
@@ -111,6 +114,7 @@ def calculate_rating(recipe):
     recipe.rating = round(avg_rating, 2) if avg_rating else 0
     db.session.commit()
 
+#Dekoratory dostępu
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -129,6 +133,7 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated
 
+#Endpointy aplikacji
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -155,30 +160,43 @@ def recipe_detail(recipe_id):
             user_comment = Comment.query.filter_by(recipe_id=recipe.id, user_id=user.id).first()
     return render_template("recipe.html", recipe=recipe, user_comment=user_comment)
 
-@app.route("/recipe/<int:recipe_id>/add_comment", methods=["POST"])
+@app.route("/recipe/<int:recipe_id>/comment", methods=["POST"])
+@app.route("/recipe/<int:recipe_id>/comment/<int:comment_id>", methods=["POST"])
 @login_required
-def add_comment(recipe_id):
+def add_comment(recipe_id, comment_id=None):
+
     recipe = Recipe.query.get_or_404(recipe_id)
     user = User.query.filter_by(username=session["username"]).first()
 
     existing_comment = Comment.query.filter_by(recipe_id=recipe.id, user_id=user.id).first()
-    if existing_comment:
-        flash("Komentarz już istnieje.", "error")
-        return redirect(url_for("recipe_detail", recipe_id=recipe.id))
 
     rating = int(request.form.get("rating"))
     text = request.form.get("text").strip()
 
     if not text or rating < 1 or rating > 5:
         flash("Nieprawidłowe dane komentarza.", "error")
-        return redirect(url_for("recipe_detail", recipe_id=recipe.id))
+        return redirect(url_for("recipe_detail", recipe_id=recipe_id))
+
+    if comment_id and existing_comment:
+        existing_comment.rating = rating
+        existing_comment.text = text
+        db.session.commit()
+        calculate_rating(recipe)
+        flash("Komentarz zaktualizowany!", "success")
+        return redirect(url_for("recipe_detail", recipe_id=recipe_id))
+
+    if existing_comment:
+        flash("Możesz dodać tylko jeden komentarz.", "error")
+        return redirect(url_for("recipe_detail", recipe_id=recipe_id))
 
     comment = Comment(text=text, rating=rating, user=user, recipe=recipe)
     db.session.add(comment)
     db.session.commit()
     calculate_rating(recipe)
+
     flash("Komentarz dodany!", "success")
-    return redirect(url_for("recipe_detail", recipe_id=recipe.id))
+    return redirect(url_for("recipe_detail", recipe_id=recipe_id))
+
 
 @app.route("/recipe/<int:recipe_id>/delete_comment/<int:comment_id>", methods=["POST"])
 @login_required
@@ -263,9 +281,6 @@ def admin_delete_user(user_id):
     flash(f"Użytkownik {user.username} i jego komentarze zostały usunięte.", "success")
     return redirect(url_for("admin_dashboard"))
 
-
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -315,35 +330,6 @@ def add_recipe():
 
     CATEGORIES = ["obiad", "śniadanie", "kolacja"]
     return render_template('add_recipe.html', categories=CATEGORIES)
-
-@app.route("/admin/recipe/<int:recipe_id>/edit", methods=["GET", "POST"])
-@admin_required
-def admin_edit_recipe(recipe_id):
-    recipe = Recipe.query.get_or_404(recipe_id)
-    
-    if request.method == "POST":
-        recipe.name = request.form.get("name")
-        recipe.category = request.form.get("category")
-        recipe.time = request.form.get("time")
-        recipe.difficulty = request.form.get("difficulty")
-        recipe.portions = request.form.get("portions")
-        
-        new_image_file = request.files.get("image")
-        
-        if new_image_file and new_image_file.filename != '':
-            if recipe.image and "placeholder" not in recipe.image:
-                old_public_id = get_public_id_from_url(recipe.image)
-                if old_public_id:
-                    cloudinary.uploader.destroy(old_public_id)
-            
-            upload_result = cloudinary.uploader.upload(new_image_file)
-            recipe.image = upload_result.get("secure_url")
-
-        db.session.commit()
-        flash("Przepis zaktualizowany!", "success")
-        return redirect(url_for("admin_dashboard"))
-        
-    return render_template("admin_edit_recipe.html", recipe=recipe)
 
 @app.route("/admin/recipe/<int:recipe_id>/delete", methods=["POST"])
 @admin_required
