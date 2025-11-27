@@ -11,9 +11,10 @@ import cloudinary
 import cloudinary.uploader
 import os
 
-# Konfiguracja backendu
+# Konfiguracja backendu - odczytanie zmiennych środowiskowych  
 load_dotenv()
 
+#Konfiguraca połączenia z chmurą Cloudinary (zdjęcia przepisów)
 cloudinary.config(
     cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
     api_key = os.getenv('CLOUDINARY_API_KEY'),
@@ -21,21 +22,20 @@ cloudinary.config(
 )
 
 app = Flask(__name__)
+
+# Konfiguracja aplikacji Flask oraz połączenia z bazą danych
 app.secret_key = os.getenv("SECRET_KEY")
 DATABASE_URL = os.getenv("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Ograniczenie liczby żądań do aplikacji
 limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=["300 per day", "100 per hour"],
     storage_uri="memory://",
 )
-
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "images")
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 
@@ -109,6 +109,7 @@ def get_public_id_from_url(url):
     except Exception:
         return None
 
+#Funkcja obliczająca średnią ocenę przepisu
 def calculate_rating(recipe):
     avg_rating = db.session.query(db.func.avg(Comment.rating)).filter_by(recipe_id=recipe.id).scalar()
     recipe.rating = round(avg_rating, 2) if avg_rating else 0
@@ -134,10 +135,13 @@ def admin_required(f):
     return decorated
 
 #Endpointy aplikacji
+
+# Strona główna
 @app.route("/")
 def index():
     return render_template("index.html")
 
+# Strona kategorii przepisów z opcjonalnym wyszukiwaniem
 @app.route("/category/<category>")
 def category(category):
     q = request.args.get('q', '')
@@ -150,6 +154,8 @@ def category(category):
         recipes = Recipe.query.filter_by(category=category).all()
     return render_template("category.html", category=category, recipes=recipes)
 
+
+# Strona szczegółów przepisu
 @app.route("/recipe/<int:recipe_id>")
 def recipe_detail(recipe_id):
     recipe = Recipe.query.get_or_404(recipe_id)
@@ -160,6 +166,8 @@ def recipe_detail(recipe_id):
             user_comment = Comment.query.filter_by(recipe_id=recipe.id, user_id=user.id).first()
     return render_template("recipe.html", recipe=recipe, user_comment=user_comment)
 
+
+# Dodawanie lub edytowanie komentarza do przepisu
 @app.route("/recipe/<int:recipe_id>/comment", methods=["POST"])
 @app.route("/recipe/<int:recipe_id>/comment/<int:comment_id>", methods=["POST"])
 @login_required
@@ -198,6 +206,7 @@ def add_comment(recipe_id, comment_id=None):
     return redirect(url_for("recipe_detail", recipe_id=recipe_id))
 
 
+# Usuwanie komentarza do przepisu
 @app.route("/recipe/<int:recipe_id>/delete_comment/<int:comment_id>", methods=["POST"])
 @login_required
 def delete_comment(recipe_id, comment_id):
@@ -215,6 +224,9 @@ def delete_comment(recipe_id, comment_id):
     flash("Komentarz usunięty.", "success")
     return redirect(url_for("recipe_detail", recipe_id=recipe_id))
 
+#Logowanie, rejestracja, wylogowanie
+
+#Logowanie użytkownika
 @app.route("/login", methods=["POST"])
 def login():
     email = request.form.get("email")
@@ -232,6 +244,7 @@ def login():
         flash("Nieprawidłowe dane logowania", "error")
     return redirect(url_for("index"))
 
+#Rejestracja użytkownika - tymczasowo zablokowana
 @app.route("/register", methods=["POST"])
 def register():
     '''
@@ -249,6 +262,7 @@ def register():
     '''
     return "Serwer odebrał żądanie rejestracji"
 
+#Wylogowanie użytkownika
 @app.route("/logout")
 def logout():
     session.clear()
@@ -256,6 +270,7 @@ def logout():
     return redirect(url_for("index"))
 
 
+#Panel administracyjny
 @app.route("/admin")
 @admin_required
 def admin_dashboard():
@@ -267,6 +282,7 @@ def admin_dashboard():
                          users=users, 
                          comments=comments)
 
+#Usunięcie użytkownika przez admina
 @app.route("/admin/user/<int:user_id>/delete", methods=["POST"])
 @admin_required
 def admin_delete_user(user_id):
@@ -285,6 +301,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+#Dodanie nowego przepisu przez admina
 @app.route("/admin/recipe/add", methods=["GET", "POST"])
 @admin_required
 def add_recipe():
@@ -331,6 +348,7 @@ def add_recipe():
     CATEGORIES = ["obiad", "śniadanie", "kolacja"]
     return render_template('add_recipe.html', categories=CATEGORIES)
 
+#Usunięcie przepisu przez admina
 @app.route("/admin/recipe/<int:recipe_id>/delete", methods=["POST"])
 @admin_required
 def admin_delete_recipe(recipe_id):
@@ -346,40 +364,7 @@ def admin_delete_recipe(recipe_id):
     flash("Przepis i zdjęcie usunięte!", "success")
     return redirect(url_for("admin_dashboard"))
 
-@app.route("/admin/recipe/<int:recipe_id>/ingredients")
-@admin_required
-def admin_recipe_ingredients(recipe_id):
-    recipe = Recipe.query.get_or_404(recipe_id)
-    return render_template("admin_ingredients.html", recipe=recipe)
-
-@app.route("/admin/recipe/<int:recipe_id>/ingredient/add", methods=["POST"])
-@admin_required
-def admin_add_ingredient(recipe_id):
-    recipe = Recipe.query.get_or_404(recipe_id)
-    text = request.form.get("text")
-    if text:
-        ingredient = Ingredient(text=text, recipe_id=recipe.id)
-        db.session.add(ingredient)
-        db.session.commit()
-        flash("Składnik dodany!", "success")
-    return redirect(url_for("admin_recipe_ingredients", recipe_id=recipe_id))
-
-@app.route("/admin/ingredient/<int:ingredient_id>/delete", methods=["POST"])
-@admin_required
-def admin_delete_ingredient(ingredient_id):
-    ingredient = Ingredient.query.get_or_404(ingredient_id)
-    recipe_id = ingredient.recipe_id
-    db.session.delete(ingredient)
-    db.session.commit()
-    flash("Składnik usunięty!", "success")
-    return redirect(url_for("admin_recipe_ingredients", recipe_id=recipe_id))
-
-@app.route("/admin/recipe/<int:recipe_id>/steps")
-@admin_required
-def admin_recipe_steps(recipe_id):
-    recipe = Recipe.query.get_or_404(recipe_id)
-    return render_template("admin_steps.html", recipe=recipe)
-
+#Usunięcie konta przez użytkownika
 @app.route("/profile/delete", methods=["POST"])
 @login_required
 def delete_my_account():
@@ -393,30 +378,7 @@ def delete_my_account():
     flash("Twoje konto zostało trwale usunięte. Dane zniknęły z bazy.", "success")
     return redirect(url_for("index"))
 
-
-@app.route("/admin/recipe/<int:recipe_id>/step/add", methods=["POST"])
-@admin_required
-def admin_add_step(recipe_id):
-    recipe = Recipe.query.get_or_404(recipe_id)
-    text = request.form.get("text")
-    order = request.form.get("order", type=int)
-    if text and order:
-        step = Step(text=text, order=order, recipe_id=recipe.id)
-        db.session.add(step)
-        db.session.commit()
-        flash("Krok dodany!", "success")
-    return redirect(url_for("admin_recipe_steps", recipe_id=recipe_id))
-
-@app.route("/admin/step/<int:step_id>/delete", methods=["POST"])
-@admin_required
-def admin_delete_step(step_id):
-    step = Step.query.get_or_404(step_id)
-    recipe_id = step.recipe_id
-    db.session.delete(step)
-    db.session.commit()
-    flash("Krok usunięty!", "success")
-    return redirect(url_for("admin_recipe_steps", recipe_id=recipe_id))
-
+#Usunięcie komentarza przez admina
 @app.route("/admin/comment/<int:comment_id>/delete", methods=["POST"])
 @admin_required
 def admin_delete_comment(comment_id):
@@ -429,14 +391,5 @@ def admin_delete_comment(comment_id):
     flash("Komentarz usunięty!", "success")
     return redirect(url_for("admin_dashboard"))
 
-#Inicjalizacja bazy danych - obecnie używany jest Render
-#def init_db():
-#    with app.app_context():
-#        db.create_all()
-#        
-#init_db()
-
 if __name__ == "__main__":
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
-
     app.run()
