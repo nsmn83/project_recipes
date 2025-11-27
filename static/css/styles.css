@@ -189,13 +189,6 @@ ol li {
   font-weight: 500;
 }
 
-.flash-message.hide {
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-
 .flash-message.success {
   background-color: #d4edda;
   color: #155724;
@@ -236,16 +229,6 @@ ol li {
   opacity: 1;
 }
 
-@keyframes slideInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 /* Formularz wyszukiwania (strona z listą przepisów) */
 .search-form {
@@ -282,12 +265,10 @@ ol li {
         url('../images/index_background.webp') type("image/webp"),
         url('../images/index_background.jpg') type("image/jpeg")
     );
-
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-color: var(--primary-color);
-      
     min-height: calc(100vh - 50px);            
     width: 100%;
     display: flex;
@@ -386,14 +367,11 @@ ol li {
 }
 
 .card a {
-<<<<<<< HEAD
-  display: inline-block; /* by przypisac do linku wysokosc, szerokosc itp*/
-  margin: 10px 0 15px;
-=======
-  display: flex;
+  display: inline-block;
   margin-top: auto;
-  margin-bottom: 5px;
->>>>>>> 1d96d0e155c62567c0aa3216b9746e45196195af
+  margin-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 8px 16px;
   background-color: var(--primary-color);
   color: white;
@@ -925,6 +903,7 @@ ol li {
     display: none;
   }
 }
+
 
 /* Dla ekranów mobilnych dwie kolumny w liscie przepisow */
 @media screen and (max-width: 600px) {

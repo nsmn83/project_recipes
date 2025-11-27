@@ -90,8 +90,10 @@ window.onclick = function(event) {
 document.addEventListener('DOMContentLoaded', function() {
   initStarRating('#commentModal .comment-form .star-rating', '#rating-new'); 
   initStarRating('#commentModal .comment-form .star-rating', '#rating-edit'); 
+});
 
-  const flashMessages = document.querySelectorAll('.flash-message');
+document.addEventListener('DOMContentLoaded', function() {
+    const flashMessages = document.querySelectorAll('.flash-message');
   if (flashMessages.length > 0) {
     setTimeout(function() {
       flashMessages.forEach(function(message) {
@@ -102,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }, 5000);
   }
-});
+})
 
 window.addEventListener('resize', () => {
   const nav = document.getElementById("myTopnav");
